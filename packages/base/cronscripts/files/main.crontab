@@ -1,6 +1,0 @@
-*/5  * * * * /usr/sbin/run-crons 5
-*/10 * * * * /usr/sbin/run-crons 10
-*/30 * * * * /usr/sbin/run-crons 30
-0    * * * * /usr/sbin/run-crons hourly
-1    7 * * * /usr/sbin/run-crons daily
-15   4 * * 6 /usr/sbin/run-crons weekly
