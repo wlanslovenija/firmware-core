@@ -1,0 +1,24 @@
+#!/bin/sh -e
+
+if [ ! -x /sbin/wlc ]; then
+  exit
+fi
+
+. $IPKG_INSTROOT/etc/functions.sh
+
+# Get channel that should be set
+config_load wireless
+config_get WIFI_CHANNEL wl0 channel
+
+if [ "$WIFI_CHANNEL" != "" ]; then
+  CHANNEL=`/sbin/wlc ifname wl0 channel`
+
+  # If channels don't match, reboot
+  if [ "$WIFI_CHANNEL" != "$CHANNEL" ]; then
+    logger "nodewatcher-watchdog: Detected wifi channel mismatch in brcm-2.4 driver! Rebooting in 30 seconds."
+    sleep 30
+    logger "nodewatcher-watchdog: Rebooting now due to channel mismatch!"
+    reboot
+  fi
+fi
+

@@ -1,0 +1,91 @@
+#nodogsplash table {
+    font-size: 11px;
+}
+
+#nodogsplash td {
+    padding: 0px 20px;
+    vertical-align: top;
+}
+
+#nodogsplash td.buttons {
+    padding: 20px;
+}
+
+#nodogsplash .error {
+    padding: 40px;
+    font-size: 130%;
+    color: #528f63;
+    text-align: center;
+    font-weight: bold;
+}
+
+#nodogsplash hr {
+    border: 1px solid #F3F5F3;
+    width: 250px;
+    margin: 30px auto;
+}
+
+#nodogsplash #footer {
+    text-align: center;
+    margin: 20px;
+    font-size: 90%;
+}
+
+#nodogsplash #main {
+    padding: 0px 30px;
+}
+
+#nodogsplash form {
+    text-align: center;
+    padding: 5px 0px;
+}
+
+#nodogsplash input {
+    background: transparent url(/very_unlikely_filename_42_button.png) center center no-repeat;
+    height: 90px;
+    color: #528f63;
+    text-align: center;
+    font-weight: bold;
+    vertical-align: middle;
+    border: none;
+    cursor: pointer;
+}
+
+#nodogsplash .info h3 {
+    margin: 0px;
+}
+
+#nodogsplash .info h3 .label {
+    display: none;
+}
+
+#nodogsplash .info {
+    background-color: #F5F7F5;
+   -moz-border-radius-bottomleft:3px;
+   -moz-border-radius-bottomright:3px;
+   -moz-border-radius-topleft:3px;
+   -moz-border-radius-topright:3px;
+    border: none;
+    padding: 20px;
+}
+
+#nodogsplash .info p {
+    margin-bottom: 0px;
+}
+
+#nodogsplash .warning {
+  -moz-border-radius-bottomleft:3px;
+  -moz-border-radius-bottomright:3px;
+  -moz-border-radius-topleft:3px;
+  -moz-border-radius-topright:3px;
+  margin: 10px;
+  padding: 5px;
+  border: 1px solid #CD2D1D;
+  background-color: #FFEBE9;
+  color: #930E00;
+  clear: both;
+}
+
+#nodogsplash .warning a {
+  color: #930E00;
+}

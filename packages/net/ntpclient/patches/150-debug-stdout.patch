@@ -1,0 +1,11 @@
+--- ntpclient-2007.orig/ntpclient.c	2009-09-20 11:56:49.000000000 +0200
++++ ntpclient-2007/ntpclient.c	2009-09-20 11:57:13.000000000 +0200
+@@ -236,7 +236,7 @@
+ #define POLL 4
+ #define PREC -6
+ 
+-	if (debug) fprintf(stderr,"Sending ...\n");
++	if (debug) printf("Sending ...\n");
+ 	if (sizeof data != 48) {
+ 		fprintf(stderr,"size error\n");
+ 		return;

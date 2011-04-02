@@ -1,0 +1,20 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2006 OpenWrt.org
+START=99
+
+start() {
+	# Sync time 15 minutes after boot
+	{
+		sleep 900
+		if [ -c /dev/ttyS1 ]; then
+			DEVICE="/dev/ttyS1"
+		else
+			DEVICE="/dev/tts/1"
+		fi
+
+		/usr/bin/solar -d ${DEVICE} -b 9600 -p setdaytime
+	} &
+}
+
+stop() {
+}

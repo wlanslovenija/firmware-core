@@ -1,0 +1,50 @@
+#!/bin/sh
+
+LOOKUP_LOCAL="localhost"
+LOOKUP_REMOTE="dns-test.wlan"
+REMOTE_RESPONSE="127.0.0.1"
+
+if [ ! -x /usr/sbin/dnsmasq ]; then
+  # DNS server is not installed, ignore this test
+  exit 0
+fi
+
+if [ ! -f /tmp/traffic_redirection_enabled ]; then
+  # Local checks (is dnsmasq functioning properly?)
+  nslookup ${LOOKUP_LOCAL} > /dev/null
+  if [ "$?" == "0" ]; then
+    echo -n "0" > /var/dns_test_local
+  else
+    echo -n "1" > /var/dns_test_local
+    /etc/init.d/dnsmasq stop
+    /etc/init.d/dnsmasq start
+  fi
+
+  # Remote checks (are DNS resolutions actually working?)
+  DNS_RESULT="1"
+  for _ in $(seq 1 5); do
+    DNS_RESPONSE="`nslookup ${LOOKUP_REMOTE}`"
+    if [ "$?" == "0" ]; then
+      # Verify if record matches
+      if [ "`echo ${DNS_RESPONSE} | awk '{ print $11 }'`" != "${REMOTE_RESPONSE}" ]; then
+        DNS_RESULT="2"
+      else
+        DNS_RESULT="0"
+      fi
+
+      break
+    else
+      # Failed to resolve remote record, retry again in one second
+      DNS_RESULT="1"
+      sleep 1
+    fi
+  done
+  
+  # Save remote test result
+  echo -n "${DNS_RESULT}" > /var/dns_test_remote
+else
+  # Since traffic redirection is enabled, report DNS as ok
+  echo -n "0" > /var/dns_test_local
+  echo -n "0" > /var/dns_test_remote
+fi
+

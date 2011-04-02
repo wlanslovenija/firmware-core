@@ -1,0 +1,59 @@
+#!/bin/bash
+#
+# nodewatcher firmware prepare script
+#
+
+OPENWRT_CHECKOUT_DIR=.openwrt
+
+log()
+{
+  echo "[nw-firmware] prepare: $*"
+}
+
+# Check if all utilities that we need are ready for use
+log "Checking for prepare-time dependencies..."
+
+quilt=$(which quilt)
+if [ "$quilt" == "" ]; then
+  log "quilt not found."
+  exit 1
+fi
+
+# Check for proper working directory
+log "Checking working directory..."
+if [[ ! -d packages || ! -d scripts || ! -d patches.openwrt || ! -f openwrt.version ]]; then
+  log "Invalid working directory (missing packages, scripts, patches.openwrt or openwrt.version)!"
+  exit 1
+fi
+
+workdir=$(pwd)
+
+# Now that we have everything verified, first checkout the OpenWRT repository
+openwrt_version=$(cat openwrt.version)
+log "OpenWRT trunk version: ${openwrt_version}"
+log "Checking out OpenWRT into .openwrt, this could take some time..."
+
+rm -rf ${OPENWRT_CHECKOUT_DIR}
+svn co -q -r ${openwrt_version} svn://svn.openwrt.org/openwrt/trunk ${OPENWRT_CHECKOUT_DIR}
+
+log "Purging .svn files from repository..."
+find ${OPENWRT_CHECKOUT_DIR} -name .svn -type d -exec rm -rf "{}" \; 2>/dev/null
+
+# Inject feeds and configurations
+log "Configuring feeds..."
+echo "src-link nodewatcher ${workdir}/packages" > ${OPENWRT_CHECKOUT_DIR}/feeds.conf
+echo "src-svn openwrt svn://svn.openwrt.org/openwrt/packages" >> ${OPENWRT_CHECKOUT_DIR}/feeds.conf
+
+# Patch OpenWRT
+log "Applying patches for OpenWRT base tree..."
+cd ${OPENWRT_CHECKOUT_DIR}
+quilt import -p 0 -f -d n ../patches.openwrt/*.patch
+quilt push -f -a
+
+# Importing feeds
+log "Importing feeds..."
+./scripts/feeds update -a >/dev/null
+./scripts/feeds install -a -p nodewatcher
+
+# Preparation is now completed
+log "Preparation completed, you may now build the firmware."

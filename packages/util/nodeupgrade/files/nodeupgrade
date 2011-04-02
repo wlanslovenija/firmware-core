@@ -1,0 +1,559 @@
+#!/bin/sh
+
+TMP_PARTITION="/tmp"
+
+# List of password files to keep after upgrade
+PASSWORD_FILES="/etc/passwd /etc/group"
+PASSWORD_KEEP=0
+
+# List of configuration files to keep after upgrade
+CONF_FILES="/etc/dropbear/dropbear_dss_host_key /etc/dropbear/dropbear_rsa_host_key /etc/whitelist.mac"
+CONF_TGZ="$TMP_PARTITION/sysupgrade.tgz"
+CONF_KEEP=1
+
+# List of services to stop before flashing (to free memory)
+SERVICES_STOP="cron httpd nodogsplash nullhttpd openvpn"
+SERVICES_STOP_LITE="cron httpd nodogsplash nullhttpd"
+SERVICES_STOP_WAIT=5 # seconds
+SERVICES_KILL="$SERVICES_STOP crond ntpclient"
+SERVICES_KILL_LITE="$SERVICES_STOP_LITE crond ntpclient"
+SERVICES_TERM_WAIT=5 # seconds
+SERVICES_LITE=0
+
+# List of files to (additionaly) include in ramdisk
+export RAMFS_COPY_DATA="/etc/passwd /etc/shells"
+
+UPGRADE_ONLY_KERNEL=0
+UPGRADE_ONLY_ROOT=0
+IGNORE_HOSTNAME=0
+
+DOWNLOAD_TIMEOUT=420 # seconds
+DOWNLOAD_RETRY_WAIT_TIME=60 # seconds
+DOWNLOAD_RETRY_NUMBER=3 # number of retries
+
+DOWNLOAD_ONLY=0
+
+BASE64AWK=/lib/upgrade/base64.awk
+HOSTSAWK=/lib/upgrade/hosts.awk
+
+script_interrupted() {
+	echo "Interrupted."
+	exit 2
+}
+
+trap "script_interrupted" INT
+
+usage() {
+cat <<EOF
+
+$0 [-n] [-p] [-d] [-l] [-k|-r] <image filename ...>
+  -n  do not keep current configuration files after upgrade
+  -p  keep current password files after upgrade
+  -d  only free memory and download files (if necessary)
+	  (be careful, it will sever VPN connection and will not reboot, maybe use -l)
+  -l  use lite version of freeing memory (do not sever VPN connection)
+	  (be careful, there could not be enough memory, maybe use -k or -r)
+  -k  upgrade only kernel partition (but all files have to be specified)
+  -r  upgrade only root partition (but all files have to be specified)
+  -h  ignore mismatch of hostname in image filename and system's hostname
+  
+  <image filename>	image filename (or HTTP/FTP URL) with embedded checksum and type
+
+WARNING: It is expected that watchdog can be disabled by TERM signal. If this is not so disable watchdog manually before running this script. Otherwise watchdog could reboot the node in the middle of flashing what is NOT fun.
+EOF
+}
+
+. /etc/functions.sh
+include /lib/upgrade
+
+image_type() {
+	local base="$(basename "$1")"
+	base=${base%.*}
+	local length=$(( ${#base} - 23 ))
+	if [[ "$length" -lt 1 ]]; then
+		echo "Invalid image filename '$1'."
+		exit 1
+	fi
+	base=${base:0:$length}
+	base=${base##*-}
+	case "$base" in
+		root)
+			;;
+		kernel)
+			;;
+		*)
+			base=""
+			;;
+	esac
+	type=$base
+}
+
+image_checksum() {
+	local base="$(basename "$1")"
+	base=${base%.*}
+	base="$(/bin/echo -n "$base" | tail -c 22)"
+	checksum="$(awk -f $BASE64AWK -- "$base" 2>/dev/null)"
+}
+
+image_hostname() {
+	hostname="$(basename "$1")"
+	hostname=${hostname%.*}
+	local length=$(( ${#hostname} - 23 ))
+	if [[ "$length" -lt 1 ]]; then
+		echo "Invalid image filename '$1'."
+		exit 1
+	fi
+	hostname=${hostname:0:$length} # removes checksum
+	hostname=${hostname%-*} # removes image type
+	hostname=${hostname%-*} # removes version
+	hostname=${hostname%-*} # removes router type
+}
+
+remote_file() {
+	case "$1" in
+		http://*|ftp://*)
+			return 0
+			;;
+		*)
+			return 1
+			;;
+	esac
+}
+
+remote_file_hostname() {
+	remote_hostname=${1#http://}
+	remote_hostname=${remote_hostname#ftp://}
+	remote_hostname=${remote_hostname%%/*}
+	remote_hostname=${remote_hostname%%:*}
+}
+
+check_partitions() {
+	if [[ "$IMAGES_COUNT" -eq 1 ]]; then
+		if ! grep -q -E '"linux"$' /proc/mtd 2>/dev/null; then
+			echo "Missing required partition(s)."
+			exit 1
+		fi
+	else
+		if ! grep -q -E '"rootfs"$' /proc/mtd 2>/dev/null; then
+			echo "Missing required partition(s)."
+			exit 1
+		fi
+		if ! grep -q -E '"vmlinux\.bin\.l7"$' /proc/mtd 2>/dev/null; then
+			echo "Missing required partition(s)."
+			exit 1
+		fi
+	fi
+}
+
+get_magic() {
+	cat "$1" 2>/dev/null | dd bs=2 count=1 2>/dev/null | hexdump -v -n 2 -e '1/1 "%02x"' 2>/dev/null
+}
+
+check_trx() {
+	case "$(get_magic "$1")" in
+		4844)
+			return 0
+			;;
+		*)
+			echo "Image '$1' is not a .trx file."
+			return 1
+		;;
+	esac	
+}
+
+check_jffs2() {
+	case "$(get_magic "$1")" in
+		1985)
+			return 0
+			;;
+		*)
+			echo "Image '$1' is not a .jffs2 file."
+			return 1
+		;;
+	esac	
+}
+
+check_lzma() {
+	# TODO: Check if image is a .lzma file
+	# (it seems there is no simple check for this)
+	return 0
+}
+
+check_checksum() {
+	local file="$1"
+	local checksum="$2"
+	
+	echo "Checking '$file' checksum."
+	if ! echo "$checksum" "" "$file" | md5sum -s -c -; then
+		echo "Image '$file' failed checksum check."
+		return 1
+	else
+		return 0
+	fi
+}
+
+check_hostname() {
+	local file="$1"
+	local local_hostname="$(uname -n)"
+	image_hostname "$file"
+	if [[ "$hostname" == "$local_hostname" ]]; then
+		return 0
+	elif [[ "$IGNORE_HOSTNAME" -ne 0 ]]; then
+		echo "Hostname in image filename '$hostname' does not match system's hostname '$local_hostname', but ignoring."
+		return 0
+	else
+		echo "Hostname in image filename '$hostname' does not match system's hostname '$local_hostname'."
+		return 1
+	fi
+}
+
+check_image() {
+	local image="$1"
+	local type="$2"
+	local checksum="$3"
+
+	# Sanity checks
+	[[ -r "$image" ]] && [[ -s "$image" ]] || {
+		echo "Image '$image' does not exist or is empty."
+		return 1
+	}
+	
+	case "$type" in
+		root)
+			check_jffs2 "$image" || return 1
+			;;
+		kernel)
+			check_lzma "$image" || return 1
+			;;
+		*)
+			check_trx "$image" || return 1
+			;;
+	esac
+	
+	check_checksum "$image" "$checksum" || return 1
+	
+	return 0
+}
+
+check_file_partition() {
+	local image="$1"
+	
+	# Check if readlink exists, if not we return success as check is not possible
+	type 'readlink' 2>/dev/null >/dev/null || return 0
+	
+	if ! readlink -f "$image" 2>/dev/null | grep -q -E "^$TMP_PARTITION/" 2>/dev/null; then
+		echo "Image is not stored under '$TMP_PARTITION'."
+		return 1
+	fi
+	
+	return 0
+}
+
+stop_services() {
+	if [[ "$SERVICES_LITE" -ne 0 ]]; then
+		echo "Stopping services (VPN will not be stopped)."
+		local services_stop="$SERVICES_STOP_LITE"
+		local services_kill="$SERVICES_KILL_LITE"
+	else
+		echo "Stopping services (it is normal for the connection to go down now if the node is connected only by VPN to the network, but flashing will continue)."
+		local services_stop="$SERVICES_STOP"
+		local services_kill="$SERVICES_KILL"
+	fi
+
+	for service in $services_stop; do
+		"/etc/init.d/$service" stop 2>/dev/null &
+	done
+
+	sleep "$SERVICES_STOP_WAIT"
+	
+	for service in $services_kill; do
+		killall -q -TERM "$service" 2>/dev/null
+	done
+	
+	sleep "$SERVICES_TERM_WAIT"
+	
+	for service in $services_kill; do
+		killall -q -KILL "$service" 2>/dev/null
+	done	
+}
+
+download_image() {
+	local image="$1"
+	local try=0
+	local result
+
+	output_image="$(basename "$image")"
+	output_image="$TMP_PARTITION/$output_image"
+
+	echo "Downloading '$image'."
+	while true; do
+		result=$(timeout -t "$DOWNLOAD_TIMEOUT" wget -c -q -O "$output_image" "$image" 2>&1 >/dev/null)
+		if [[ "$?" -eq 0 ]]; then
+			# Download successful
+			break
+		# TODO: What happens when FTP downloading already fully downloaded image?
+		elif echo "$result" | grep -q -E "server returned error.+\<416\>" 2>/dev/null; then
+			# Image has already been downloaded fully (we check checksum anyway)
+			break
+		elif [[ "$try" -lt "$DOWNLOAD_RETRY_NUMBER" ]]; then
+			echo "Failed. Waiting for retry $DOWNLOAD_RETRY_WAIT_TIME seconds."
+			sleep "$DOWNLOAD_RETRY_WAIT_TIME"
+			echo "Retrying."
+			try=$((try + 1))
+		else
+			echo "Image '$image' download to '$output_image' failed."
+			return 1
+		fi
+	done
+	echo "Done."
+
+	image_type "$output_image"
+	image_checksum "$image"
+	check_image "$output_image" "$type" "$checksum" || return 1
+
+	return 0
+}
+
+if [[ -z "$(rootfs_type 2>/dev/null)" ]]; then
+	echo "Running from ramdisk is not supported."
+	exit 1
+fi
+
+IMAGES=""
+IMAGES_COUNT=0
+while [ -n "$1" ]; do
+	case "$1" in
+		-n)
+			CONF_KEEP=0
+			;;
+		-p)
+			PASSWORD_KEEP=1
+			;;
+		-d)
+			DOWNLOAD_ONLY=1
+			;;
+		-l)
+			SERVICES_LITE=1
+			;;
+		-k)
+			UPGRADE_ONLY_KERNEL=1
+			;;
+		-r)
+			UPGRADE_ONLY_ROOT=1
+			;;
+		-h)
+			IGNORE_HOSTNAME=1
+			;;
+		-*)
+			echo "Invalid argument '$1'."
+			usage
+			exit 1
+			;;
+		*)
+			IMAGES="$IMAGES $1"
+			IMAGES_COUNT=$((IMAGES_COUNT + 1))
+			;;
+	esac
+	shift;
+done
+
+if [[ "$IMAGES_COUNT" -eq 0 ]]; then
+	echo "Missing image filename(s)."
+	usage
+	exit 1
+elif [[ "$IMAGES_COUNT" -gt 2 ]]; then
+	echo "Too many image filenames."
+	usage
+	exit 1	
+fi
+if [[ "$IMAGES_COUNT" -eq 1 ]]; then
+	if [[ "$UPGRADE_ONLY_KERNEL" -ne 0 || "$UPGRADE_ONLY_ROOT" -ne 0 ]]; then
+		echo "-k and -r arguments can be used only multiple files."
+		usage
+		exit 1
+	fi
+fi
+if [[ "$UPGRADE_ONLY_KERNEL" -ne 0 && "$UPGRADE_ONLY_ROOT" -ne 0 ]]; then
+	echo "-k and -r arguments cannot be specified both at the same time."
+	usage
+	exit 1
+fi
+
+HOSTS=""
+FLASH_IMAGE=""
+ROOT_IMAGE=""
+KERNEL_IMAGE=""
+for image in $IMAGES; do
+	# We first check for image type as this also checks for image filename length
+	image_type "$image"
+	if [[ "$IMAGES_COUNT" -eq 1 ]]; then
+		if [[ -n "$type" ]]; then
+			echo "Invalid image type or missing image filename argument."
+			exit 1
+		fi
+
+		FLASH_IMAGE="$image"
+	elif [[ -n "$ROOT_IMAGE" ]]; then
+		case "$type" in
+			root)
+				echo "Duplicate '$type' image type filename argument."
+				exit 1
+				;;
+			kernel)
+				KERNEL_IMAGE="$image"
+				;;
+			*)
+				echo "Invalid image type or redundant image filename argument."
+				exit 1
+				;;
+		esac
+	elif [[ -n "$KERNEL_IMAGE" ]]; then
+		case "$type" in
+			root)
+				ROOT_IMAGE="$image"
+				;;
+			kernel)
+				echo "Duplicate '$type' image type filename argument."
+				exit 1
+				;;
+			*)
+				echo "Invalid image type or redundant image filename argument."
+				exit 1
+				;;
+		esac
+	else
+		case "$type" in
+			root)
+				ROOT_IMAGE="$image"
+				;;
+			kernel)
+				KERNEL_IMAGE="$image"
+				;;
+			*)
+				echo "Invalid image type or redundant image filename argument."
+				exit 1
+				;;
+		esac
+	fi
+	
+	# We check if checksum extraction works
+	image_checksum "$image"
+	if [[ "${#checksum}" -ne 32 ]]; then
+		echo "Missing or invalid image checksum in image filename."
+		exit 1
+	fi
+
+	# We check if hostname in image filename matches system's hostname
+	check_hostname "$image" || exit 1
+	
+	if remote_file "$image"; then
+		# We are resolving hostnames in advance as DNS will maybe not work later (when we maybe sever VPN connection) anymore
+		remote_file_hostname "$image"
+		
+		if ! echo "$HOSTS" | grep -q -E " $remote_hostname$" 2>/dev/null; then
+			echo "Resolving '$remote_hostname'."
+			resolved="$(nslookup "$remote_hostname" 2>/dev/null | awk -f "$HOSTSAWK" -v "host=$remote_hostname" 2>/dev/null)"
+			[[ -n "$resolved" ]] || {
+				echo "Hostname '$remote_hostname' lookup failed."
+				exit 1
+			}
+			HOSTS="$HOSTS"$'\n'"$resolved"
+		fi
+		
+		echo "Checking if remote file '$image' exists."
+		if ! wget -q -s "$image" 2>/dev/null; then
+			echo "Image '$image' does not exists on the server or unable to connect to it."
+			exit 1
+		fi
+	else
+		check_image "$image" "$type" "$checksum" || exit 1
+		check_file_partition "$image" || exit 1
+	fi
+done
+
+# We check target partitions (to see if we are on a system which is supported)
+check_partitions
+
+# We have checked everything we can check in advance, now it is for real
+
+if [[ "$PASSWORD_KEEP" -ne 0 && "$CONF_KEEP" -ne 0 ]]; then
+	CONF_FILES="$CONF_FILES $PASSWORD_FILES"
+elif [[ "$PASSWORD_KEEP" -ne 0 ]]; then
+	CONF_FILES="$PASSWORD_FILES"
+elif [[ "$CONF_KEEP" -eq 0 ]]; then
+	CONF_FILES=""
+fi
+
+rm -f "$CONF_TGZ"
+if [[ -n "$CONF_FILES" ]]; then
+	echo "Archiving configuration files."
+	tar czf "$CONF_TGZ" $CONF_FILES 2>/dev/null
+fi
+
+# We add resolved hostnames so we can resolve them later in any case
+# (we do not clean them in the case of failed flash, though)
+echo "$HOSTS" >>/etc/hosts
+
+# Ignore SIGHUP, SIGPIPE, SIGTTIN and SIGTTOU
+trap '' HUP
+trap '' PIPE
+trap '' TTIN
+trap '' TTOU
+
+# We free memory now (and maybe sever VPN connection)
+stop_services
+
+# Prevents DHCP and traffic forwarding
+iptables -I INPUT -p udp --dport 67:68 -j DROP
+sysctl -e -w net.ipv4.ip_forward=0 >/dev/null
+
+if [[ "$UPGRADE_ONLY_KERNEL" -ne 0 ]]; then
+	ROOT_IMAGE=""
+else
+	if [[ -n "$ROOT_IMAGE" && ! -e "$ROOT_IMAGE" ]]; then
+		download_image "$ROOT_IMAGE" || flashing_failed
+		ROOT_IMAGE="$output_image"
+	fi
+fi
+export ROOT_IMAGE
+
+if [[ "$UPGRADE_ONLY_ROOT" -ne 0 ]]; then
+	KERNEL_IMAGE=""
+else
+	if [[ -n "$KERNEL_IMAGE" && ! -e "$KERNEL_IMAGE" ]]; then
+		download_image "$KERNEL_IMAGE" || flashing_failed
+		KERNEL_IMAGE="$output_image"
+	fi
+fi
+export KERNEL_IMAGE
+
+if [[ -n "$FLASH_IMAGE" && ! -e "$FLASH_IMAGE" ]]; then
+	download_image "$FLASH_IMAGE" || flashing_failed
+	FLASH_IMAGE="$output_image"
+fi
+export FLASH_IMAGE
+
+# Other variables needed
+export CONF_TGZ
+
+if [[ "$DOWNLOAD_ONLY" -ne 0 ]]; then
+	echo "In download only mode. Done."
+	exit 0
+fi
+
+# Prepares everything
+trap "flashing_failed" EXIT
+
+echo "Killing watchdog."
+killall -q -TERM watchdog 2>/dev/null
+
+# This can kill OLSR if actions plugin is not enabled or USR1 signal ignored
+echo "Disabling OLSR actions plugin."
+killall -q -USR1 olsrd 2>/dev/null
+
+# And we fly
+echo "Switching to ramdisk and upgrading."
+run_ramfs '. /etc/functions.sh; include /lib/upgrade; node_upgrade'
+
+# We should not come here
+flashing_failed

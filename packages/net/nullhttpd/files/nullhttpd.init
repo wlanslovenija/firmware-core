@@ -1,0 +1,30 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2007 OpenWrt.org
+
+START=55
+
+start() {
+  . /lib/nodewatcher/common.sh
+  
+  get_local_ip
+  /usr/bin/nullhttpd -h ${LOCAL_IP} -p 2051 -r /www/nullhttpd/very_unlikely_filename_42.html -b /www/nullhttpd -d /var/run/nullhttpd.pid
+  
+  iptables -N NULLHTTPD_POLICY
+  iptables -I INPUT -p tcp --dport 2051 -j NULLHTTPD_POLICY
+  
+  get_client_subnets
+  for subnet in $client_subnets; do
+    iptables -A NULLHTTPD_POLICY -s ${subnet} -j RETURN
+  done
+  
+  iptables -A NULLHTTPD_POLICY -p tcp -j REJECT --reject-with tcp-reset
+}
+
+stop() {
+  kill `cat /var/run/nullhttpd.pid`
+  
+  iptables -D INPUT -p tcp --dport 2051 -j NULLHTTPD_POLICY
+  iptables -F NULLHTTPD_POLICY
+  iptables -X NULLHTTPD_POLICY
+}
+

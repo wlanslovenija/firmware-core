@@ -1,0 +1,18 @@
+--- olsrd-0.6.0/src/cfgparser/oparse.y.orig	2010-08-31 21:19:47.000000000 +0200
++++ olsrd-0.6.0/src/cfgparser/oparse.y	2010-08-31 21:23:01.170525573 +0200
+@@ -1363,6 +1363,7 @@
+     fprintf(stderr, "Bad main IP: %s\n", $2->string);
+     YYABORT;
+   }
++  olsr_cnf->unicast_src_ip = olsr_cnf->main_addr;
+   free($2);
+ }
+         |       TOK_MAIN_IP TOK_IPV6_ADDR
+@@ -1374,6 +1375,7 @@
+     fprintf(stderr, "Bad main IP: %s\n", $2->string);
+     YYABORT;
+   }
++  olsr_cnf->unicast_src_ip = olsr_cnf->main_addr;
+   free($2);
+ }
+ 

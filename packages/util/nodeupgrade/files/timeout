@@ -1,0 +1,77 @@
+#!/bin/sh
+
+TIMEOUT=60 # seconds
+POLL_INTERVAL=1 # seconds
+KILL_TERM_WAIT=5 # seconds
+
+usage() {
+cat <<EOF
+
+$0 [-t <timeout>] [-i <interval>] [-w <kill wait>] <command> [<argument ...>]
+  -t  wait <timeout> seconds for <command> to finish (default: $TIMEOUT)
+  -i  check <command> every <interval> seconds (default: $POLL_INTERVAL)
+  -w  wait <kill wait> seconds between TERM and KILL signals (default: $KILL_TERM_WAIT)
+  
+  <timeout>      command timeout (positive integer)
+  <interval>     checking interval (positive integer)
+  <kill wait>    wait time between signals (positive integer)
+  <command>      command to execute with timeout
+  <argument>     argument to the command
+EOF
+}
+
+while getopts ":t:i:w:" option; do
+	case "$option" in
+		t)
+			TIMEOUT=$OPTARG
+			;;
+		i)
+			POLL_INTERVAL=$OPTARG
+			;;
+		d)
+			KILL_TERM_WAIT=$OPTARG
+			;;
+		*)
+			echo "Invalid argument '-$OPTARG'."
+			usage
+			exit 1
+			;;
+	esac
+done
+shift $((OPTIND - 1))
+
+if [[ "$#" -eq 0 ]]; then
+	echo "Missing command argument."
+	usage
+	exit 1
+elif [[ "$TIMEOUT" -lt 1 ]]; then
+	echo "Invalid timeout argument '$TIMEOUT'."
+	usage
+	exit 1
+elif [[ "$POLL_INTERVAL" -lt 1 ]]; then
+	echo "Invalid interval argument '$POLL_INTERVAL'."
+	usage
+	exit 1
+elif [[ "$KILL_TERM_WAIT" -lt 1 ]]; then
+	echo "Invalid kill wait argument '$KILL_TERM_WAIT'."
+	usage
+	exit 1
+fi
+
+(
+	while [[ "$TIMEOUT" -gt 0 ]]; do
+		sleep "$POLL_INTERVAL"
+		kill -0 "$$" || exit 0
+		TIMEOUT=$((TIMEOUT - POLL_INTERVAL))
+	done
+	
+	echo "Timeout expired, sending TERM to '$1/$$'."
+	kill -TERM "$$" && kill -0 "$$" || exit 0
+	sleep "$KILL_TERM_WAIT"
+	kill -0 "$$" || exit 0
+	
+	echo "Sending KILL to '$1/$$'."
+	kill -KILL "$$"
+) 2>/dev/null &
+
+exec "$@"

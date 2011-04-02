@@ -1,0 +1,34 @@
+#!/bin/sh
+
+DMESG_TEMP="/tmp/dmesg.tmp"
+LAST_LINE="/tmp/wifi_errors_last_line"
+COUNTER_FILE="/tmp/wifi_errors_counter"
+PATTERN="ath_bstuck_tasklet: Stuck beacon; resetting|NETDEV WATCHDOG: wifi.*: transmit timed out"
+
+if ! dmesg | egrep -q '^\[[0-9. ]+\]'; then
+	# Timestamps in dmesg not enabled with CONFIG_PRINTK_TIME
+	exit 0
+fi
+
+dmesg > "$DMESG_TEMP"
+
+LAST_LINE_PATTERN=`cat "$LAST_LINE" 2>/dev/null`
+if [[ -n "$LAST_LINE_PATTERN" ]]; then
+	LAST_LINE_NUMBER=`grep -h -n -F "$LAST_LINE_PATTERN" "$DMESG_TEMP" | head -q -n 1 | cut -d ':' -f 1`
+else
+	LAST_LINE_NUMBER=0
+fi
+let LAST_LINE_NUMBER++
+tail -n "+$LAST_LINE_NUMBER" "$DMESG_TEMP" > "$DMESG_TEMP.new"
+mv "$DMESG_TEMP.new" "$DMESG_TEMP"
+
+if [ -s "$DMESG_TEMP" ]; then
+	COUNT=`egrep -c "$PATTERN" "$DMESG_TEMP"`
+	NEW_LAST_LINE=`tail -n 1 "$DMESG_TEMP"`
+	echo "$NEW_LAST_LINE" > "$LAST_LINE"
+	ALL_COUNT=`cat "$COUNTER_FILE" 2>/dev/null`
+	let ALL_COUNT+=COUNT
+	echo "$ALL_COUNT" > "$COUNTER_FILE"
+fi
+
+rm "$DMESG_TEMP"

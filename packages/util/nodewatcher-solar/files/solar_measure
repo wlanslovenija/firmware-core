@@ -1,0 +1,3 @@
+#!/bin/sh
+/www/cgi-bin/nodewatcher solar_measure
+

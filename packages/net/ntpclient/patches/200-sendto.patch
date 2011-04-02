@@ -1,0 +1,47 @@
+--- ntpclient-2007.orig/ntpclient.c	2009-09-20 11:57:13.000000000 +0200
++++ ntpclient-2007/ntpclient.c	2009-09-20 12:07:43.000000000 +0200
+@@ -134,6 +134,8 @@
+ 	char serv_addr[4];
+ };
+ 
++struct sockaddr_in sa_dest;
++
+ /* prototypes for some local routines */
+ static void send_packet(int usd, u32 time_sent[2]);
+ static int rfc1305print(u32 *data, struct ntptime *arrival, struct ntp_control *ntpc, int *error);
+@@ -250,7 +252,7 @@
+ 	ntpc_gettime(time_sent, time_sent+1);
+ 	data[10] = htonl(time_sent[0]); /* Transmit Timestamp coarse */
+ 	data[11] = htonl(time_sent[1]); /* Transmit Timestamp fine   */
+-	send(usd,data,48,0);
++	sendto(usd,data,48,0,(struct sockaddr *)&sa_dest,sizeof sa_dest);
+ }
+ 
+ static void get_packet_timestamp(int usd, struct ntptime *udp_arrival_ntp)
+@@ -286,7 +288,8 @@
+ 	/* we could check that the source is the server we expect, but
+ 	 * Denis Vlasenko recommends against it: multihomed hosts get it
+ 	 * wrong too often. */
+-#if 0
++	/* We will check it anyway. */
++#if 1
+ 	if (memcmp(ntpc->serv_addr, &(sa_in->sin_addr), 4)!=0) {
+ 		return 1;  /* fault */
+ 	}
+@@ -472,14 +475,13 @@
+ 
+ static void setup_transmit(int usd, char *host, short port, struct ntp_control *ntpc)
+ {
+-	struct sockaddr_in sa_dest;
+ 	memset(&sa_dest,0,sizeof sa_dest);
+ 	sa_dest.sin_family=AF_INET;
+ 	stuff_net_addr(&(sa_dest.sin_addr),host);
+ 	memcpy(ntpc->serv_addr,&(sa_dest.sin_addr),4); /* XXX asumes IPv4 */
+ 	sa_dest.sin_port=htons(port);
+-	if (connect(usd,(struct sockaddr *)&sa_dest,sizeof sa_dest)==-1)
+-		{perror("connect");exit(1);}
++	/*if (connect(usd,(struct sockaddr *)&sa_dest,sizeof sa_dest)==-1)
++		{perror("connect");exit(1);}*/
+ }
+ 
+ static void primary_loop(int usd, struct ntp_control *ntpc)

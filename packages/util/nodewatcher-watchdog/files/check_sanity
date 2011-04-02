@@ -1,0 +1,23 @@
+#!/bin/sh
+
+if [ -x /usr/bin/ndsctl ]; then
+  ndsctl -s /var/run/nodogsplash.sock status >/dev/null
+  STATUS="$?"
+  echo -n "${STATUS}" > /var/nds_status
+
+  if [ "${STATUS}" == "1" ]; then
+    logger "nodewatcher: Nodogsplash failure detected, attempting forced restart"
+    killall -9 nodogsplash
+    /etc/init.d/nodogsplash start
+  fi
+fi
+
+if [ "`ps ax | grep olsrd | grep -v grep`" == "" ]; then
+  # Olsrd failure detected, reboot the node if up more than 300 seconds
+  UPTIME=`cat /proc/uptime | awk '{ printf("%d\n", $1); }'`
+  
+  if [ $UPTIME -gt 300 ]; then
+    logger "nodewatcher: OLSR is not running, rebooting"
+    reboot
+  fi
+fi 

@@ -1,0 +1,8 @@
+#!/bin/sh -e
+#
+# Nodewatcher package management cgi-bin script
+#
+
+# Just list all installed packages
+/bin/opkg list_installed
+

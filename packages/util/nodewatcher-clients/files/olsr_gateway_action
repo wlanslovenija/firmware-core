@@ -1,0 +1,30 @@
+#!/bin/sh
+ACTION="$1"
+ROUTE="$2"
+INIT_DONE="/tmp/gw_init_done"
+
+# Include common functions
+. /lib/nodewatcher/actions.sh
+
+# Check what action to take
+if [[ "${ACTION}" == "init" && ! -f ${INIT_DONE} ]]; then
+  # Initialize with traffic redirection enabled
+  start_traffic_redirection
+  touch ${INIT_DONE}
+elif [[ "${ACTION}" == "finish" ]]; then
+  # Finish with traffic redirection disabled
+  if [[ -f ${MARK_TRAFFIC} ]]; then
+    stop_traffic_redirection
+  fi
+  
+  rm -f ${INIT_DONE}
+elif [[ "${ACTION}" == "add" && -f ${MARK_TRAFFIC} ]]; then
+  # Internet gateway has come back up, reconfigure redirection when needed
+  stop_dns_redirection
+  stop_traffic_redirection
+elif [[ "${ACTION}" == "del" && ! -f ${MARK_TRAFFIC} ]]; then
+  # Internet gateway has just gone down, setup request redirection
+  start_traffic_redirection
+  try_dns_redirection traffic
+fi
+

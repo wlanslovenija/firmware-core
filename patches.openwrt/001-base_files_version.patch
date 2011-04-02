@@ -1,0 +1,4 @@
+--- package/base-files/files/etc/version.orig	2011-04-02 13:22:51.705621002 +0200
++++ package/base-files/files/etc/version	2011-04-02 13:21:53.000000000 +0200
+@@ -0,0 +1 @@
++hg
