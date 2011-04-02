@@ -21,8 +21,8 @@ fi
 
 # Check for proper working directory
 log "Checking working directory..."
-if [[ ! -d packages || ! -d scripts || ! -d patches.openwrt || ! -f openwrt.version ]]; then
-  log "Invalid working directory (missing packages, scripts, patches.openwrt or openwrt.version)!"
+if [[ ! -d scripts || ! -d patches.openwrt || ! -f openwrt.version ]]; then
+  log "Invalid working directory (missing scripts, patches.openwrt or openwrt.version)!"
   exit 1
 fi
 
