@@ -3,7 +3,7 @@
 # nodewatcher firmware prepare script
 #
 
-BUILD_DIR=.build
+BUILD_DIR=build
 
 log()
 {
@@ -32,7 +32,7 @@ mkdir -p ${BUILD_DIR}
 # Now that we have everything verified, first checkout the OpenWRT repository
 openwrt_version=$(cat openwrt/version)
 log "OpenWRT trunk version: ${openwrt_version}"
-log "Checking out OpenWRT into .build, this could take some time..."
+log "Checking out OpenWRT into ${BUILD_DIR}, this could take some time..."
 
 OPENWRT_CHECKOUT_DIR=${workdir}/${BUILD_DIR}/openwrt
 rm -rf ${OPENWRT_CHECKOUT_DIR}
@@ -49,7 +49,7 @@ echo "src-svn openwrt svn://svn.openwrt.org/openwrt/packages" >> ${OPENWRT_CHECK
 # Patch OpenWRT
 log "Applying patches for OpenWRT base tree..."
 cd ${OPENWRT_CHECKOUT_DIR}
-quilt import -p 0 -f -d n ${workdir}/openwrt/base-patches/*.patch
+ln -s ${workdir}/openwrt/patches patches
 quilt push -f -a
 
 # Importing feeds
