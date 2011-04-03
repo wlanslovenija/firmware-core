@@ -1,3 +1,4 @@
 syntax: glob
-build
 *.swp
+syntax: regexp
+^build$
