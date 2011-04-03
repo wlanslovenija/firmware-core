@@ -53,11 +53,8 @@ openwrt_builder()
   # Make hardlinks to avoid space duplication but to still isolate builds
   cp -lr ${workdir}/${BUILD_DIR}/openwrt ${build_dir}
   
-  # Cleanup build directory
+  # Prepare configuration file and build the bastard
   cd ${build_dir}
-  make distclean &> /dev/null
-  
-  # Prepare configuration file and build the mastard
   cp config.${arch} .config
   make V=99 &> ${build_dir}/build.log
   if [ "$?" != "0" ]; then
@@ -122,7 +119,13 @@ for arch in $architectures; do
 done
 
 # Trap interruptions
-trap "kill ${builder_pids} 2>/dev/null; exit" INT QUIT TERM EXIT
+trap_handler()
+{
+  local pgid=$(ps -p $$ -o pgid="")
+  kill -- -${pgid}
+  exit
+}
+trap trap_handler INT QUIT TERM EXIT
 
 # Wait for builders
 log "Waiting for builders to finish building..."
