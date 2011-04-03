@@ -49,19 +49,19 @@ openwrt_builder()
 {
   local arch=$1
   local build_dir=${workdir}/${BUILD_DIR}/builder.${arch}.$$
-  trap "openwrt_builder_cleanup ${build_dir}" INT QUIT TERM EXIT
 
   # Make hardlinks to avoid space duplication but to still isolate builds
   cp -lr ${workdir}/${BUILD_DIR}/openwrt ${build_dir}
   
   # Cleanup build directory
   cd ${build_dir}
-  make distclean > /dev/null 2> /dev/null
+  make distclean &> /dev/null
   
   # Prepare configuration file and build the mastard
   cp config.${arch} .config
-  make > /dev/null 2> /dev/null
+  make V=99 &> ${build_dir}/build.log
   if [ "$?" != "0" ]; then
+    log "Build for architecture '${arch}' has failed. See build.log for details!"
     exit 1
   fi
 
