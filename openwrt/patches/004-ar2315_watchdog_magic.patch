@@ -59,9 +59,9 @@
 ++		printk(KERN_INFO "ar2315_wdt: disabling watchdog with magic\n");
 ++		started = 0;
 ++		got_magic = 0;
-++		sysRegWrite(AR5315_WDC, 0);
-++		sysRegWrite(AR5315_WD, 0);
-++		sysRegWrite(AR5315_ISR, 0x80);
+++		ar231x_write_reg(AR2315_WDC, 0);
+++		ar231x_write_reg(AR2315_WD, 0);
+++		ar231x_write_reg(AR2315_ISR, 0x80);
 ++	}
 + 	return 0;
 + }
