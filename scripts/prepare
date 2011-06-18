@@ -57,5 +57,9 @@ log "Importing feeds..."
 ./scripts/feeds update -a >/dev/null
 ./scripts/feeds install -a -p nodewatcher
 
+for package in $(cat ${workdir}/openwrt/packages); do
+  ./scripts/feeds install ${package}
+done
+
 # Preparation is now completed
 log "Preparation completed, you may now build the firmware."
