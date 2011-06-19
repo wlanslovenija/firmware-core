@@ -799,7 +799,7 @@ CONFIG_PACKAGE_firewall=y
 CONFIG_PACKAGE_hotplug2=y
 CONFIG_PACKAGE_libc=y
 CONFIG_PACKAGE_libgcc=y
-# CONFIG_PACKAGE_libpthread is not set
+CONFIG_PACKAGE_libpthread=y
 # CONFIG_PACKAGE_librt is not set
 # CONFIG_PACKAGE_libstdcpp is not set
 CONFIG_PACKAGE_mtd=y
@@ -839,7 +839,7 @@ CONFIG_PACKAGE_iptables-mod-nat=y
 #
 # Routing and Redirection
 #
-# CONFIG_PACKAGE_ip is not set
+CONFIG_PACKAGE_ip=y
 # CONFIG_PACKAGE_relayd is not set
 
 #
@@ -850,19 +850,16 @@ CONFIG_PACKAGE_iptables-mod-nat=y
 #
 # Web Servers/Proxies
 #
-# CONFIG_PACKAGE_uhttpd is not set
+CONFIG_PACKAGE_uhttpd=y
 # CONFIG_PACKAGE_chat is not set
-# CONFIG_PACKAGE_crda is not set
+CONFIG_PACKAGE_crda=y
 # CONFIG_PACKAGE_genl is not set
 # CONFIG_PACKAGE_hostapd is not set
 # CONFIG_PACKAGE_hostapd-mini is not set
 # CONFIG_PACKAGE_hostapd-utils is not set
 # CONFIG_PACKAGE_ifenslave is not set
 # CONFIG_PACKAGE_ipset is not set
-# CONFIG_PACKAGE_iw is not set
-# CONFIG_PACKAGE_netprofscripts is not set
-# CONFIG_PACKAGE_nullhttpd is not set
-# CONFIG_PACKAGE_olsrd is not set
+CONFIG_PACKAGE_iw=y
 CONFIG_PACKAGE_ppp=y
 # CONFIG_PACKAGE_ppp-mod-pppoa is not set
 CONFIG_PACKAGE_ppp-mod-pppoe=y
@@ -871,7 +868,7 @@ CONFIG_PACKAGE_ppp-mod-pppoe=y
 # CONFIG_PACKAGE_pppdump is not set
 # CONFIG_PACKAGE_pppstats is not set
 # CONFIG_PACKAGE_pptp is not set
-# CONFIG_PACKAGE_tc is not set
+CONFIG_PACKAGE_tc=y
 # CONFIG_PACKAGE_wpa-cli is not set
 # CONFIG_PACKAGE_wpa-supplicant is not set
 # CONFIG_WPA_SUPPLICANT_NO_TIMESTAMP_CHECK is not set
@@ -1116,7 +1113,7 @@ CONFIG_PACKAGE_kmod-pppoe=y
 # CONFIG_PACKAGE_kmod-sched is not set
 # CONFIG_PACKAGE_kmod-sctp is not set
 # CONFIG_PACKAGE_kmod-sit is not set
-# CONFIG_PACKAGE_kmod-tun is not set
+CONFIG_PACKAGE_kmod-tun=y
 # CONFIG_PACKAGE_kmod-wprobe is not set
 
 #
@@ -1127,7 +1124,7 @@ CONFIG_PACKAGE_kmod-pppoe=y
 # Other modules
 #
 # CONFIG_PACKAGE_kmod-bluetooth is not set
-# CONFIG_PACKAGE_kmod-button-hotplug is not set
+CONFIG_PACKAGE_kmod-button-hotplug=y
 CONFIG_PACKAGE_kmod-crc-ccitt=y
 # CONFIG_PACKAGE_kmod-crc-itu-t is not set
 # CONFIG_PACKAGE_kmod-crc16 is not set
@@ -1135,14 +1132,15 @@ CONFIG_PACKAGE_kmod-crc-ccitt=y
 # CONFIG_PACKAGE_kmod-eeprom-93cx6 is not set
 # CONFIG_PACKAGE_kmod-gpio-dev is not set
 # CONFIG_PACKAGE_kmod-hid is not set
-# CONFIG_PACKAGE_kmod-input-core is not set
+CONFIG_PACKAGE_kmod-input-core=y
 # CONFIG_PACKAGE_kmod-input-evdev is not set
 # CONFIG_PACKAGE_kmod-input-gpio-buttons is not set
 # CONFIG_PACKAGE_kmod-input-gpio-encoder is not set
 # CONFIG_PACKAGE_kmod-input-gpio-keys is not set
+CONFIG_PACKAGE_kmod-input-gpio-keys-polled=y
 # CONFIG_PACKAGE_kmod-input-joydev is not set
-# CONFIG_PACKAGE_kmod-input-polldev is not set
-# CONFIG_PACKAGE_kmod-leds-gpio is not set
+CONFIG_PACKAGE_kmod-input-polldev=y
+CONFIG_PACKAGE_kmod-leds-gpio=y
 # CONFIG_PACKAGE_kmod-ledtrig-gpio is not set
 # CONFIG_PACKAGE_kmod-ledtrig-heartbeat is not set
 # CONFIG_PACKAGE_kmod-ledtrig-morse is not set
