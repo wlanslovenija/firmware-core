@@ -56,6 +56,12 @@ openwrt_builder()
   # Prepare configuration file and build the bastard
   cd ${build_dir}
   cp config.${arch} .config
+  make defconfig &> ${build_dir}/build.log
+  if [ "$?" != "0" ]; then
+    log "Default configuration preparation for '${arch}' has failed. See build.log for details!"
+    exit 1
+  fi
+
   make V=99 &> ${build_dir}/build.log
   if [ "$?" != "0" ]; then
     log "Build for architecture '${arch}' has failed. See build.log for details!"
