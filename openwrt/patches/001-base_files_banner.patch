@@ -1,12 +1,14 @@
 --- package/base-files/files/etc/banner.orig    2011-04-02 13:36:47.000000000 +0200
 +++ package/base-files/files/etc/banner 2011-04-02 13:37:41.909621001 +0200
-@@ -1,14 +1,5 @@
+@@ -1,16 +1,5 @@
 -  _______                     ________        __
 - |       |.-----.-----.-----.|  |  |  |.----.|  |_
 - |   -   ||  _  |  -__|     ||  |  |  ||   _||   _|
 - |_______||   __|_____|__|__||________||__|  |____|
 -          |__| W I R E L E S S   F R E E D O M
-- ATTITUDE ADJUSTMENT (bleeding edge, $R) ----------
+- -----------------------------------------------------
+- ATTITUDE ADJUSTMENT (%C, %R)
+- -----------------------------------------------------
 -  * 1/4 oz Vodka      Pour all ingredients into mixing
 -  * 1/4 oz Gin        tin with ice, strain into glass.
 -  * 1/4 oz Amaretto
