@@ -29,6 +29,9 @@ fi
 workdir=$(pwd)
 mkdir -p ${BUILD_DIR}
 
+# Get version identifier
+firmware_version=$(git describe --always)
+
 # Now that we have everything verified, first checkout the OpenWRT repository
 openwrt_version=$(cat openwrt/version)
 log "OpenWRT trunk version: ${openwrt_version}"
@@ -51,6 +54,17 @@ log "Applying patches for OpenWRT base tree..."
 cd ${OPENWRT_CHECKOUT_DIR}
 ln -s ${workdir}/openwrt/patches patches
 quilt push -f -a
+
+# Update version file and banner
+echo "git.${firmware_version}" > package/base-files/files/etc/version
+echo "
+ +-------------------------------------------------+
+ | wlan slovenia                  open.wlan-si.net |
+ |          node                                   |
+ +-------------------------------------------------+
+ *) FIRMWARE VERSION: git.${firmware_version}
+ 
+" > package/base-files/files/etc/banner
 
 # Importing feeds
 log "Importing feeds..."
