@@ -6,3 +6,4 @@ kmod-l2tp-ip
 kmod-l2tp-eth
 kmod-netem
 olsrd
+kmod-usb-serial-ti-usb
