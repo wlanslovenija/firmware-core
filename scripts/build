@@ -115,6 +115,7 @@ done
 # Cleanup previous builder leftovers
 log "Cleaning up previous builder leftovers..."
 rm -rf ${workdir}/${BUILD_DIR}/builder.*
+rm -rf ${workdir}/${BUILD_DIR}/release
 
 # Generate build configurations
 log "Generating build configurations..."
