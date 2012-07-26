@@ -36,6 +36,9 @@ openwrt_build_configure()
   for pkg in ${all_packages}; do
     echo "CONFIG_PACKAGE_${pkg}=y" >> ${config}
   done
+
+  # Remove configuration file already present in the generic build dir
+  rm -f ${workdir}/${BUILD_DIR}/openwrt/.config
 }
 
 openwrt_builder_cleanup()
@@ -68,8 +71,13 @@ openwrt_builder()
     exit 1
   fi
 
-  # TODO Copy packages etc.
-  
+  # Copy image builder and packages
+  log "Copying image builder and packages for '${arch}'..."
+  local release_dir=${workdir}/${BUILD_DIR}/release/${arch}
+  mkdir -p ${release_dir}
+  cp ${build_dir}/bin/${arch}/OpenWrt-ImageBuilder-*.tar.bz2 ${release_dir}/imagebuilder.${arch}.tar.bz2
+  cp -a ${build_dir}/bin/${arch}/packages ${release_dir}
+
   # Cleanup things
   openwrt_builder_cleanup ${build_dir}
 }
