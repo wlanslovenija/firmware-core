@@ -31,8 +31,8 @@ Index: target/linux/generic/patches-3.3/880-ti-usb-3410-launchpad.patch
 + 	{ USB_DEVICE(MTS_VENDOR_ID, MTS_CDMA_NO_FW_PRODUCT_ID) },
 + 	{ USB_DEVICE(MTS_VENDOR_ID, MTS_CDMA_PRODUCT_ID) },
 +diff -u a/ti_usb_3410_5052.h b/ti_usb_3410_5052.h
-+--- a/ti_usb_3410_5052.h	2012-07-26 10:55:02.926538040 +0200
-++++ b/ti_usb_3410_5052.h	2012-07-26 10:56:19.554918019 +0200
++--- a/drivers/usb/serial/ti_usb_3410_5052.h	2012-07-26 10:55:02.926538040 +0200
+++++ b/drivers/usb/serial/ti_usb_3410_5052.h	2012-07-26 10:56:19.554918019 +0200
 +@@ -33,6 +33,7 @@
 + #define IBM_454B_PRODUCT_ID		0x454b
 + #define IBM_454C_PRODUCT_ID		0x454c
