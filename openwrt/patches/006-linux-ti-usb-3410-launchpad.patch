@@ -1,0 +1,43 @@
+Index: target/linux/generic/patches-3.3/880-ti-usb-3410-launchpad.patch
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ target/linux/generic/patches-3.3/880-ti-usb-3410-launchpad.patch	2012-07-26 11:05:27.333634308 +0200
+@@ -0,0 +1,38 @@
++diff -u a/drivers/usb/serial/ti_usb_3410_5052.c b/drivers/usb/serial/ti_usb_3410_5052.c
++--- a/drivers/usb/serial/ti_usb_3410_5052.c	2012-07-26 10:55:02.926538040 +0200
+++++ b/drivers/usb/serial/ti_usb_3410_5052.c	2012-07-26 10:58:16.235496608 +0200
++@@ -165,9 +165,10 @@
++ /* the array dimension is the number of default entries plus */
++ /* TI_EXTRA_VID_PID_COUNT user defined entries plus 1 terminating */
++ /* null entry */
++-static struct usb_device_id ti_id_table_3410[15+TI_EXTRA_VID_PID_COUNT+1] = {
+++static struct usb_device_id ti_id_table_3410[16+TI_EXTRA_VID_PID_COUNT+1] = {
++ 	{ USB_DEVICE(TI_VENDOR_ID, TI_3410_PRODUCT_ID) },
++ 	{ USB_DEVICE(TI_VENDOR_ID, TI_3410_EZ430_ID) },
+++	{ USB_DEVICE(TI_VENDOR_ID, TI_3410_LAUNCHPAD_ID) },
++ 	{ USB_DEVICE(MTS_VENDOR_ID, MTS_GSM_NO_FW_PRODUCT_ID) },
++ 	{ USB_DEVICE(MTS_VENDOR_ID, MTS_CDMA_NO_FW_PRODUCT_ID) },
++ 	{ USB_DEVICE(MTS_VENDOR_ID, MTS_CDMA_PRODUCT_ID) },
++@@ -190,9 +191,10 @@
++ 	{ USB_DEVICE(TI_VENDOR_ID, TI_5052_FIRMWARE_PRODUCT_ID) },
++ };
++ 
++-static struct usb_device_id ti_id_table_combined[19+2*TI_EXTRA_VID_PID_COUNT+1] = {
+++static struct usb_device_id ti_id_table_combined[20+2*TI_EXTRA_VID_PID_COUNT+1] = {
++ 	{ USB_DEVICE(TI_VENDOR_ID, TI_3410_PRODUCT_ID) },
++ 	{ USB_DEVICE(TI_VENDOR_ID, TI_3410_EZ430_ID) },
+++	{ USB_DEVICE(TI_VENDOR_ID, TI_3410_LAUNCHPAD_ID) },
++ 	{ USB_DEVICE(MTS_VENDOR_ID, MTS_GSM_NO_FW_PRODUCT_ID) },
++ 	{ USB_DEVICE(MTS_VENDOR_ID, MTS_CDMA_NO_FW_PRODUCT_ID) },
++ 	{ USB_DEVICE(MTS_VENDOR_ID, MTS_CDMA_PRODUCT_ID) },
++diff -u a/ti_usb_3410_5052.h b/ti_usb_3410_5052.h
++--- a/ti_usb_3410_5052.h	2012-07-26 10:55:02.926538040 +0200
+++++ b/ti_usb_3410_5052.h	2012-07-26 10:56:19.554918019 +0200
++@@ -33,6 +33,7 @@
++ #define IBM_454B_PRODUCT_ID		0x454b
++ #define IBM_454C_PRODUCT_ID		0x454c
++ #define TI_3410_EZ430_ID		0xF430  /* TI ez430 development tool */
+++#define TI_3410_LAUNCHPAD_ID		0xF432  /* TI launchpad board */
++ #define TI_5052_BOOT_PRODUCT_ID		0x5052	/* no EEPROM, no firmware */
++ #define TI_5152_BOOT_PRODUCT_ID		0x5152	/* no EEPROM, no firmware */
++ #define TI_5052_EEPROM_PRODUCT_ID	0x505A	/* EEPROM, no firmware */
