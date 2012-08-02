@@ -7,5 +7,4 @@ kmod-l2tp-eth
 kmod-netem
 olsrd
 kmod-usb-serial
-kmod-usb-serial-ti-usb
 kmod-usb-acm
