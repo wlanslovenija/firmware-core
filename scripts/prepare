@@ -34,12 +34,16 @@ firmware_version=$(git describe --always)
 
 # Now that we have everything verified, first checkout the OpenWRT repository
 openwrt_version=$(cat openwrt/version)
-log "OpenWRT trunk version: ${openwrt_version}"
+openwrt_path=$(echo $openwrt_version | cut -d ':' -f 1)
+openwrt_rev=$(echo $openwrt_version | cut -d ':' -f 2)
+
+log "OpenWRT path: ${openwrt_path}"
+log "OpenWRT revision: ${openwrt_rev}"
 log "Checking out OpenWRT into ${BUILD_DIR}, this could take some time..."
 
 OPENWRT_CHECKOUT_DIR=${workdir}/${BUILD_DIR}/openwrt
 rm -rf ${OPENWRT_CHECKOUT_DIR}
-svn co -q -r ${openwrt_version} svn://svn.openwrt.org/openwrt/trunk ${OPENWRT_CHECKOUT_DIR}
+svn co -q -r ${openwrt_rev} svn://svn.openwrt.org/openwrt/${openwrt_path} ${OPENWRT_CHECKOUT_DIR}
 
 log "Purging .svn files from repository..."
 find ${OPENWRT_CHECKOUT_DIR} -name .svn -type d -exec rm -rf "{}" \; 2>/dev/null
