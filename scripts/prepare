@@ -35,6 +35,8 @@ firmware_version=$(git describe --always)
 # Now that we have everything verified, first checkout the OpenWRT repository
 openwrt_version=$(cat openwrt/version)
 openwrt_path=$(echo $openwrt_version | cut -d ':' -f 1)
+openwrt_path_name="${openwrt_path//\//-}"
+openwrt_path_name="${openwrt_path_name//_/-}"
 openwrt_rev=$(echo $openwrt_version | cut -d ':' -f 2)
 
 log "OpenWRT path: ${openwrt_path}"
@@ -57,7 +59,7 @@ echo "src-git routing git://github.com/openwrt-routing/packages.git" >> ${OPENWR
 # Patch OpenWRT
 log "Applying patches for OpenWRT base tree..."
 cd ${OPENWRT_CHECKOUT_DIR}
-ln -s ${workdir}/openwrt/patches patches
+ln -s ${workdir}/openwrt/patches/${openwrt_path_name} patches
 quilt push -f -a
 
 # Update version file and banner
