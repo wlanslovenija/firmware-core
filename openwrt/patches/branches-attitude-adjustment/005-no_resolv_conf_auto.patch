@@ -1,0 +1,21 @@
+--- package/base-files/files/etc/init.d/boot.orig	2011-04-02 13:50:33.000000000 +0200
++++ package/base-files/files/etc/init.d/boot	2011-04-02 13:50:57.821621002 +0200
+@@ -64,8 +64,6 @@
+ 	chmod 0700 /tmp/.uci
+ 	touch /var/log/wtmp
+ 	touch /var/log/lastlog
+-	touch /tmp/resolv.conf.auto
+-	ln -sf /tmp/resolv.conf.auto /tmp/resolv.conf
+ 	grep -q debugfs /proc/filesystems && mount -t debugfs debugfs /sys/kernel/debug
+ 	[ "$FAILSAFE" = "true" ] && touch /tmp/.failsafe
+ 
+--- package/dnsmasq/files/dnsmasq.init.orig	2011-04-02 13:54:24.000000000 +0200
++++ package/dnsmasq/files/dnsmasq.init	2011-04-02 13:54:33.341621002 +0200
+@@ -526,7 +526,6 @@
+ 	service_stop /usr/sbin/dnsmasq && {
+ 		[ -f /tmp/resolv.conf ] && {
+ 			rm -f /tmp/resolv.conf
+-			ln -s /tmp/resolv.conf.auto /tmp/resolv.conf
+ 		}
+ 	}
+ }
