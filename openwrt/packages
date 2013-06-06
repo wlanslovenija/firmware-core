@@ -10,3 +10,4 @@ olsrd
 kmod-usb-serial
 kmod-usb-acm
 kmod-pptp
+qos-scripts
