@@ -94,10 +94,32 @@ if [[ ! -d build/openwrt ]]; then
   exit 1
 fi
 
+override_architectures="$*"
 workdir=$(pwd)
 
 # Check architectures that we need to build
-architectures=$(cat openwrt/architectures)
+all_architectures=$(cat openwrt/architectures)
+if [ -z "${override_architectures}" ]; then
+  architectures="${all_architectures}"
+else
+  architectures=""
+  for arch in $override_architectures; do
+    found=0
+    for sarch in $all_architectures; do
+      if [[ "$arch" == "$sarch" ]]; then
+        architectures="${architectures} ${arch}"
+        found=1
+        break
+      fi
+    done
+
+    if [[ $found == 0 ]]; then
+      log "ERROR: Invalid architecture '${arch}' specified."
+      exit 1
+    fi
+  done
+fi
+
 log "Will build for the following OpenWRT architectures:"
 for arch in $architectures; do
   openwrt_verify_architecture $arch
