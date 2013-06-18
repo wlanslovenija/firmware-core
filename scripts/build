@@ -65,7 +65,9 @@ openwrt_builder()
     exit 1
   fi
 
-  make V=99 &> ${build_dir}/build.log
+  # make use of multiple (4) CPU cores and be "nice" to system resources
+  ionice -c 3 nice -n 20 make -j 4 V=99 &> ${build_dir}/build.log
+
   if [ "$?" != "0" ]; then
     log "Build for architecture '${arch}' has failed. See build.log for details!"
     exit 1
