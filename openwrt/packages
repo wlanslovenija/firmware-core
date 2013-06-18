@@ -8,6 +8,7 @@ kmod-l2tp-eth
 kmod-netem
 olsrd
 kmod-usb-serial
+kmod-usb-serial-cp210x
 kmod-usb-acm
 kmod-pptp
 qos-scripts
