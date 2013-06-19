@@ -1,0 +1,119 @@
+Index: package/mac80211/patches/900-regulatory-test.patch
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ package/mac80211/patches/900-regulatory-test.patch	2013-06-19 13:04:40.750334601 +0200
+@@ -0,0 +1,72 @@
++Index: compat-wireless-2013-02-22/drivers/net/wireless/ath/regd.c
++===================================================================
++--- compat-wireless-2013-02-22.orig/drivers/net/wireless/ath/regd.c	2013-05-11 23:32:07.134034802 +0200
+++++ compat-wireless-2013-02-22/drivers/net/wireless/ath/regd.c	2013-05-11 23:33:32.031500463 +0200
++@@ -52,12 +52,11 @@
++ #define ATH9K_5GHZ_5725_5850	REG_RULE(5725-10, 5850+10, 40, 0, 30,\
++ 				NL80211_RRF_PASSIVE_SCAN | NL80211_RRF_NO_IBSS)
++ 
++-#define ATH9K_2GHZ_ALL		ATH9K_2GHZ_CH01_11, \
++-				ATH9K_2GHZ_CH12_13, \
++-				ATH9K_2GHZ_CH14
+++#define ATH9K_2GHZ_ALL		REG_RULE(2400, 2483, 40, 0, 30, 0)
+++				
+++				
++ 
++-#define ATH9K_5GHZ_ALL		ATH9K_5GHZ_5150_5350, \
++-				ATH9K_5GHZ_5470_5850
+++#define ATH9K_5GHZ_ALL		REG_RULE(5140, 5860, 40, 0, 30, 0)
++ 
++ /* This one skips what we call "mid band" */
++ #define ATH9K_5GHZ_NO_MIDBAND	ATH9K_5GHZ_5150_5350, \
++@@ -81,9 +80,8 @@
++ static const struct ieee80211_regdomain ath_world_regdom_63_65 = {
++ 	.alpha2 =  "99",
++ 	REGD_RULES(
++-		ATH9K_2GHZ_CH01_11,
++-		ATH9K_2GHZ_CH12_13,
++-		ATH9K_5GHZ_NO_MIDBAND,
+++		ATH9K_2GHZ_ALL,
+++		ATH9K_5GHZ_ALL,
++ 	)
++ };
++ 
++@@ -91,8 +89,8 @@
++ static const struct ieee80211_regdomain ath_world_regdom_64 = {
++ 	.alpha2 =  "99",
++ 	REGD_RULES(
++-		ATH9K_2GHZ_CH01_11,
++-		ATH9K_5GHZ_NO_MIDBAND,
+++		ATH9K_2GHZ_ALL,
+++		ATH9K_5GHZ_ALL,
++ 	)
++ };
++ 
++@@ -100,7 +98,7 @@
++ static const struct ieee80211_regdomain ath_world_regdom_66_69 = {
++ 	.alpha2 =  "99",
++ 	REGD_RULES(
++-		ATH9K_2GHZ_CH01_11,
+++		ATH9K_2GHZ_ALL,
++ 		ATH9K_5GHZ_ALL,
++ 	)
++ };
++@@ -109,8 +107,7 @@
++ static const struct ieee80211_regdomain ath_world_regdom_67_68_6A_6C = {
++ 	.alpha2 =  "99",
++ 	REGD_RULES(
++-		ATH9K_2GHZ_CH01_11,
++-		ATH9K_2GHZ_CH12_13,
+++		ATH9K_2GHZ_ALL,
++ 		ATH9K_5GHZ_ALL,
++ 	)
++ };
++@@ -176,7 +173,7 @@
++ /* Frequency is one where radar detection is required */
++ static bool ath_is_radar_freq(u16 center_freq)
++ {
++-	return (center_freq >= 5260 && center_freq <= 5700);
+++	return false;
++ }
++ 
++ /*
+Index: package/mac80211/files/regdb.txt
+===================================================================
+--- package/mac80211/files/regdb.txt.orig	2013-06-04 17:22:28.103661362 +0200
++++ package/mac80211/files/regdb.txt	2013-06-19 13:02:29.021681412 +0200
+@@ -1,17 +1,8 @@
+ # This is the world regulatory domain
+ country 00:
+-	(2402 - 2472 @ 40), (3, 20)
+-        # Channel 12 - 13. No HT40 channel fits here
+-        (2457 - 2482 @ 20), (3, 20), PASSIVE-SCAN, NO-IBSS
+-        # Channel 14. Only JP enables this and for 802.11b only
+-        (2474 - 2494 @ 20), (3, 20), PASSIVE-SCAN, NO-IBSS, NO-OFDM
+-        # Channel 36 - 48
+-        (5170 - 5250 @ 40), (3, 20)
+-        # NB: 5260 MHz - 5700 MHz requies DFS
+-        # Channel 149 - 165
+-        (5735 - 5835 @ 40), (3, 20), PASSIVE-SCAN, NO-IBSS
+-
+-
++	(2400 - 2483 @ 40), (0, 30)
++	(5140 - 5860 @ 40), (0, 30)
++        
+ country AE:
+ 	(2402 - 2482 @ 40), (N/A, 20)
+ 	(5170 - 5250 @ 40), (N/A, 20)
+@@ -651,13 +642,9 @@
+ country UA:
+ 	(2402 - 2482 @ 40), (N/A, 20)
+ 
+-country US: DFS-FCC
+-	(2402 - 2472 @ 40), (3, 27)
+-	(5170 - 5250 @ 40), (3, 17)
+-	(5250 - 5330 @ 40), (3, 20), DFS
+-	(5490 - 5600 @ 40), (3, 20), DFS
+-	(5650 - 5710 @ 40), (3, 20), DFS
+-	(5735 - 5835 @ 40), (3, 30)
++country US:
++	(2400 - 2483 @ 40), (0, 30)
++	(5140 - 5860 @ 40), (0, 30)
+ 
+ country UY:
+ 	(2402 - 2482 @ 40), (N/A, 20)
