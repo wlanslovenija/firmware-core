@@ -12,3 +12,4 @@ kmod-usb-serial-cp210x
 kmod-usb-acm
 kmod-pptp
 qos-scripts
+ppp-mod-pptp
