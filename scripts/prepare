@@ -13,11 +13,14 @@ log()
 # Check if all utilities that we need are ready for use
 log "Checking for prepare-time dependencies..."
 
-quilt=$(which quilt)
-if [ "$quilt" == "" ]; then
-  log "quilt not found."
-  exit 1
-fi
+for program in quilt svn
+do
+  p=$(which $program)
+  if [ "$p" == "" ]; then
+    log "$program not found."
+    exit 1
+  fi
+done
 
 # Check for proper working directory
 log "Checking working directory..."
