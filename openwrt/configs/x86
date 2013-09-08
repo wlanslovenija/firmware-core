@@ -529,3 +529,4 @@ CONFIG_PACKAGE_nodewatcher-simpleserial=y
 CONFIG_PACKAGE_nodeupgrade=y
 CONFIG_PACKAGE_nodewatcher-clients=y
 CONFIG_PACKAGE_nodewatcher-core=y
+CONFIG_PACKAGE_conntrack-tools=y
