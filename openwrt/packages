@@ -13,3 +13,5 @@ kmod-usb-acm
 kmod-pptp
 qos-scripts
 ppp-mod-pptp
+iperf
+wpa_supplicant
