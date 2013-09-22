@@ -76,6 +76,9 @@ echo "
  
 " > package/base-files/files/etc/banner
 
+# Update custom repository location
+echo "src/gz wlansi http://bindist.wlan-si.net/profiles/nextgen/%T" >> package/opkg/files/opkg.conf
+
 # Importing feeds
 log "Importing feeds..."
 ./scripts/feeds update -a >/dev/null
