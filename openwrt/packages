@@ -14,4 +14,4 @@ kmod-pptp
 qos-scripts
 ppp-mod-pptp
 iperf
-wpa_supplicant
+wpa-supplicant
