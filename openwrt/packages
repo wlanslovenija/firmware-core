@@ -9,9 +9,12 @@ kmod-netem
 olsrd
 kmod-usb-serial
 kmod-usb-serial-cp210x
+kmod-usb-serial-ftdi
 kmod-usb-acm
 kmod-pptp
 qos-scripts
 ppp-mod-pptp
 iperf
 wpa-supplicant
+wpa-supplicant-mini
+nano
