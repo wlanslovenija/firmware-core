@@ -20,3 +20,5 @@ wpa-supplicant-mini
 nano
 horst
 tcpdump
+fft-eval
+luci-app-openairview
