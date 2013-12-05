@@ -22,3 +22,4 @@ horst
 tcpdump
 fft-eval
 luci-app-openairview
+luci-lib-jquery
