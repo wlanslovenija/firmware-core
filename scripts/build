@@ -13,11 +13,6 @@ log()
 openwrt_verify_architecture()
 {
   local arch=$1
-  if [ ! -d ${workdir}/${BUILD_DIR}/openwrt/target/linux/${arch} ]; then
-    log "Invalid architecture '${arch}', aborting."
-    exit 1
-  fi
-
   if [ ! -f ${workdir}/openwrt/configs/${arch} ]; then
     log "Architecture missing configuration file, aborting."
     exit 1
@@ -75,8 +70,8 @@ openwrt_builder()
   log "Copying image builder and packages for '${arch}'..."
   local release_dir=${workdir}/${BUILD_DIR}/release/${arch}
   mkdir -p ${release_dir}
-  cp ${build_dir}/bin/${arch}/OpenWrt-ImageBuilder-*.tar.bz2 ${release_dir}/imagebuilder.${arch}.tar.bz2
-  cp -a ${build_dir}/bin/${arch}/packages ${release_dir}
+  cp ${build_dir}/bin/*/OpenWrt-ImageBuilder-*.tar.bz2 ${release_dir}/imagebuilder.${arch}.tar.bz2
+  cp -a ${build_dir}/bin/*/packages ${release_dir}
 
   # Cleanup things
   openwrt_builder_cleanup ${build_dir}
