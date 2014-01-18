@@ -11,6 +11,11 @@ kmod-usb-serial
 kmod-usb-serial-cp210x
 kmod-usb-serial-ftdi
 kmod-usb-acm
+kmod-usb-uhci
+kmod-usb-uhci-iv
+kmod-ppp
+ppp
+chat
 kmod-pptp
 qos-scripts
 ppp-mod-pptp
@@ -23,3 +28,4 @@ tcpdump
 fft-eval
 luci-app-openairview
 luci-lib-jquery
+microcom
