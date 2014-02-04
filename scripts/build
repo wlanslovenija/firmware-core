@@ -29,7 +29,7 @@ openwrt_build_configure()
 
   # Include all common packages
   for pkg in ${all_packages}; do
-    echo "CONFIG_PACKAGE_${pkg}=y" >> ${config}
+    echo "CONFIG_PACKAGE_${pkg}=m" >> ${config}
   done
 
   # Remove configuration file already present in the generic build dir
