@@ -33,3 +33,4 @@ luci-app-openairview
 luci-lib-jquery
 microcom
 kmod-ipt-nathelper-extra
+python
