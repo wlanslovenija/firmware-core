@@ -34,3 +34,4 @@ luci-lib-jquery
 microcom
 kmod-ipt-nathelper-extra
 python
+distribute
