@@ -34,4 +34,8 @@ luci-lib-jquery
 microcom
 kmod-ipt-nathelper-extra
 python
+python-openssl
 distribute
+git
+ebtables
+libnetfilter-conntrack
