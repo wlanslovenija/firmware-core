@@ -6,6 +6,7 @@ kmod-l2tp
 kmod-l2tp-ip
 kmod-l2tp-eth
 kmod-netem
+kmod-pktgen
 olsrd
 kmod-usb-serial
 kmod-usb-serial-cp210x
