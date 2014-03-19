@@ -61,3 +61,8 @@ netprofscripts
 nullhttpd
 policy-routing
 tunneldigger
+kmod-video-core
+kmod-video-uvc
+kmod-input-core
+kmod-video-videobuf2
+mjpg-streamer
