@@ -82,7 +82,6 @@ echo "src/gz wlansi http://bindist.wlan-si.net/profiles/nextgen/%T" >> package/o
 # Importing feeds
 log "Importing feeds..."
 ./scripts/feeds update -a >/dev/null
-./scripts/feeds install -a -p nodewatcher
 
 for package in $(cat ${workdir}/openwrt/packages); do
   ./scripts/feeds install ${package}
