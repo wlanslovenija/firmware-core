@@ -8,14 +8,14 @@ Index: package/base-files/files/etc/init.d/boot
  	touch /var/log/lastlog
 -	touch /tmp/resolv.conf.auto
 -	ln -sf /tmp/resolv.conf.auto /tmp/resolv.conf
- 	grep -q debugfs /proc/filesystems && mount -o noatime -t debugfs debugfs /sys/kernel/debug
+ 	grep -q debugfs /proc/filesystems && /bin/mount -o noatime -t debugfs debugfs /sys/kernel/debug
  	[ "$FAILSAFE" = "true" ] && touch /tmp/.failsafe
  
 Index: package/network/services/dnsmasq/files/dnsmasq.init
 ===================================================================
 --- package/network/services/dnsmasq/files/dnsmasq.init.orig	2013-12-20 19:15:18.659357749 +0100
 +++ package/network/services/dnsmasq/files/dnsmasq.init	2013-12-20 19:20:33.751346992 +0100
-@@ -555,6 +555,5 @@
+@@ -582,6 +582,5 @@
  stop_service() {
  	[ -f /tmp/resolv.conf ] && {
  		rm -f /tmp/resolv.conf
