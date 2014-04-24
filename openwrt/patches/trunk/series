@@ -1,5 +1,6 @@
 004-ar2315_watchdog_magic.patch -p0
 005-no_resolv_conf_auto.patch -p0
+011-acm-uart-fix.patch -p0
 100-kernel_hyperv_modules.patch -p0
 010-imagebuilder_grub2.patch -p0
 001-fix_kernel_build_xargs.patch -p0
