@@ -1,3 +1,9 @@
 CONFIG_TARGET_lantiq=y
-CONFIG_TARGET_lantiq_danube=y
-CONFIG_TARGET_lantiq_danube_GIGASX76X=y
+CONFIG_TARGET_lantiq_xway=y
+CONFIG_TARGET_lantiq_xway_ARV4525PW=y
+CONFIG_HAS_SUBTARGETS=y
+CONFIG_TARGET_BOARD="lantiq"
+CONFIG_TARGET_ARCH_PACKAGES="lantiq"
+CONFIG_DEFAULT_TARGET_OPTIMIZATION="-Os -pipe -mno-branch-likely -mips32r2 -mtune=34kc -mdsp"
+CONFIG_CPU_TYPE="34kc+dsp"
+CONFIG_LINUX_3_10=y
