@@ -154,6 +154,8 @@ done
 # Trap interruptions
 trap_handler()
 {
+  log "Interrupted."
+  trap - INT QUIT TERM EXIT
   local pgid=$(ps -p $$ -o pgid="" | tr -d ' ')
   kill -- -${pgid}
   exit
@@ -163,4 +165,6 @@ trap trap_handler INT QUIT TERM EXIT
 # Wait for builders
 log "Waiting for builders to finish building..."
 wait ${builder_pids}
+trap - INT QUIT TERM EXIT
+log "All done."
 
