@@ -70,3 +70,10 @@ kmod-input-core
 kmod-video-videobuf2
 mjpg-streamer
 lm4flash
+kmod-ath5k
+kmod-ledtrig-usbdev
+kmod-ltq-dsl-firmware-a-danube
+kmod-ltq-dsl-firmware-b-danube
+kmod-usb-dwc-otg
+libjson
+wpad-mini
