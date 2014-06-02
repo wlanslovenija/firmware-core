@@ -1,0 +1,10 @@
+Index: package/system/opkg/files/opkg.conf
+===================================================================
+--- package/system/opkg/files/opkg.conf.orig	2014-05-30 18:56:21.077864202 +0200
++++ package/system/opkg/files/opkg.conf	2014-05-30 18:56:30.005863866 +0200
+@@ -1,4 +1,5 @@
+ src/gz %n %U
++src/gz wlansi http://bindist.wlan-si.net/firmware/stable/%T
+ dest root /
+ dest ram /tmp
+ lists_dir ext /var/opkg-lists
