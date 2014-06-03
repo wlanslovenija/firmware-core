@@ -79,4 +79,5 @@ nodewatcher-agent-mod-resources
 nodewatcher-agent-mod-interfaces
 nodewatcher-agent-mod-wireless
 nodewatcher-agent-mod-keys_ssh
+nodewatcher-agent-mod-clients
 uhttpd-mod-ubus
