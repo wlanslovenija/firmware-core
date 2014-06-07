@@ -15,8 +15,8 @@ Index: package/kernel/mac80211/files/regdb.txt
 -	# NB: 5260 MHz - 5700 MHz requies DFS
 -	# Channel 149 - 165
 -	(5735 - 5835 @ 80), (20), NO-IR
-+	(2400 - 2483 @ 40), (0, 30)
-+	(5140 - 5860 @ 40), (0, 30)
++	(2400 - 2483 @ 40), (30)
++	(5140 - 5860 @ 40), (30)
  	# IEEE 802.11ad (60GHz), channels 1..3
  	(57240 - 63720 @ 2160), (0)
  
@@ -30,8 +30,8 @@ Index: package/kernel/mac80211/files/regdb.txt
 -	(5250 - 5330 @ 80), (20), DFS
 -	(5490 - 5710 @ 80), (27), DFS
 +country SI:
-+	(2400 - 2483 @ 40), (0, 30)
-+	(5140 - 5860 @ 40), (0, 30)
++	(2400 - 2483 @ 40), (30)
++	(5140 - 5860 @ 40), (30)
  	# 60 gHz band channels 1-4, ref: Etsi En 302 567
  	(57240 - 65880 @ 2160), (40), NO-OUTDOOR
  
@@ -45,8 +45,8 @@ Index: package/kernel/mac80211/files/regdb.txt
 -	(5250 - 5330 @ 80), (23), DFS
 -	(5735 - 5835 @ 80), (30)
 +country US:
-+	(2400 - 2483 @ 40), (0, 30)
-+	(5140 - 5860 @ 40), (0, 30)
++	(2400 - 2483 @ 40), (30)
++	(5140 - 5860 @ 40), (30)
  	# 60g band
  	# reference: http://cfr.regstoday.com/47cfr15.aspx#47_CFR_15p255
  	# channels 1,2,3, EIRP=40dBm(43dBm peak)
