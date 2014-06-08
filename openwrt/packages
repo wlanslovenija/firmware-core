@@ -18,6 +18,8 @@ kmod-usb-serial-wwan
 kmod-usb-acm
 kmod-usb-uhci
 kmod-usb-uhci-iv
+kmod-usb-storage
+kmod-fs-ext4
 kmod-ppp
 ppp
 chat
@@ -81,3 +83,4 @@ nodewatcher-agent-mod-wireless
 nodewatcher-agent-mod-keys_ssh
 nodewatcher-agent-mod-clients
 uhttpd-mod-ubus
+block-mount
