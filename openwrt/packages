@@ -84,3 +84,4 @@ nodewatcher-agent-mod-keys_ssh
 nodewatcher-agent-mod-clients
 uhttpd-mod-ubus
 block-mount
+valgrind
