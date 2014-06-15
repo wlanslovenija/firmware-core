@@ -56,7 +56,7 @@ find ${OPENWRT_CHECKOUT_DIR} -name .svn -type d -exec rm -rf "{}" \; 2>/dev/null
 # Inject feeds and configurations
 log "Configuring feeds..."
 echo "src-git nodewatcher git://github.com/wlanslovenija/firmware-packages-opkg.git" > ${OPENWRT_CHECKOUT_DIR}/feeds.conf
-echo "src-git routing git://github.com/openwrt-routing/packages.git" >> ${OPENWRT_CHECKOUT_DIR}/feeds.conf
+echo "src-git routing git://github.com/wlanslovenija/openwrt-routing-packages.git" >> ${OPENWRT_CHECKOUT_DIR}/feeds.conf
 cat ${workdir}/openwrt/feeds/${openwrt_path_name} >> ${OPENWRT_CHECKOUT_DIR}/feeds.conf
 
 # Patch OpenWRT
