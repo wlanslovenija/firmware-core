@@ -1,1 +1,2 @@
-src-svn openwrt svn://svn.openwrt.org/openwrt/packages
+src-git openwrt https://github.com/openwrt/packages.git
+src-svn openwrtlegacy svn://svn.openwrt.org/openwrt/packages
