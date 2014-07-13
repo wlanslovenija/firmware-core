@@ -1,18 +1,21 @@
 Index: package/kernel/mac80211/files/regdb.txt
 ===================================================================
---- package/kernel/mac80211/files/regdb.txt.orig	2014-06-07 13:15:09.891638562 +0200
-+++ package/kernel/mac80211/files/regdb.txt	2014-06-07 13:22:22.007622033 +0200
-@@ -1,15 +1,7 @@
+--- package/kernel/mac80211/files/regdb.txt.orig	2014-07-05 19:21:19.000000000 +0200
++++ package/kernel/mac80211/files/regdb.txt	2014-07-05 19:24:29.570338059 +0200
+@@ -1,18 +1,7 @@
  # This is the world regulatory domain
  country 00:
 -	(2402 - 2472 @ 40), (20)
 -	# Channel 12 - 13.
 -	(2457 - 2482 @ 40), (20), NO-IR
 -	# Channel 14. Only JP enables this and for 802.11b only
--	(2474 - 2494 @ 20), (20), NO-IR
+-	(2474 - 2494 @ 20), (20), NO-IR, NO-OFDM
 -	# Channel 36 - 48
--	(5170 - 5250 @ 80), (20), NO-IR
--	# NB: 5260 MHz - 5700 MHz requies DFS
+-	(5170 - 5250 @ 160), (20), NO-IR
+-	# Channel 52 - 64
+-	(5250 - 5330 @ 160), (20), NO-IR, DFS
+-	# Channel 100 - 144
+-	(5490 - 5730 @ 160), (20), NO-IR, DFS
 -	# Channel 149 - 165
 -	(5735 - 5835 @ 80), (20), NO-IR
 +	(2400 - 2483 @ 40), (30)
@@ -20,7 +23,7 @@ Index: package/kernel/mac80211/files/regdb.txt
  	# IEEE 802.11ad (60GHz), channels 1..3
  	(57240 - 63720 @ 2160), (0)
  
-@@ -717,11 +709,9 @@
+@@ -809,11 +798,9 @@
  	(5490 - 5730 @ 80), (24), DFS
  	(5735 - 5835 @ 80), (30)
  
@@ -35,7 +38,7 @@ Index: package/kernel/mac80211/files/regdb.txt
  	# 60 gHz band channels 1-4, ref: Etsi En 302 567
  	(57240 - 65880 @ 2160), (40), NO-OUTDOOR
  
-@@ -791,11 +781,9 @@
+@@ -904,11 +891,9 @@
  	# 60 gHz band channels 1-4, ref: Etsi En 302 567
  	(57240 - 65880 @ 2160), (40), NO-OUTDOOR
  
