@@ -85,4 +85,5 @@ nodewatcher-agent-mod-clients
 uhttpd-mod-ubus
 block-mount
 valgrind
-ath9k_htc driver
+kmod-ath9k-htc
+kmod-ath9k-common
