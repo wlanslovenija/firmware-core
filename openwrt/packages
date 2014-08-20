@@ -88,3 +88,4 @@ block-mount
 valgrind
 kmod-ath9k-htc
 netmeasured
+apcupsd
