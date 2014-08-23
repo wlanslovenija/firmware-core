@@ -55,6 +55,7 @@ nodewatcher-simpleserial
 nodewatcher-solar
 nodewatcher-watchdog
 nodewatcher-koruza
+nodewatcher-fowsr
 readsensor
 solar
 telemetryd
