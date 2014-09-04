@@ -1,0 +1,12 @@
+Index: target/imagebuilder/Makefile
+===================================================================
+--- target/imagebuilder/Makefile.orig	2013-12-21 21:40:20.455205250 +0100
++++ target/imagebuilder/Makefile	2013-12-25 10:26:30.335451774 +0100
+@@ -50,6 +50,7 @@
+ 	  | $(XARGS) rm -rf
+ 	find $(STAGING_DIR_HOST)/bin -maxdepth 1 -type f -perm -u=x \
+ 	  | $(XARGS) $(SCRIPT_DIR)/bundle-libraries.sh $(PKG_BUILD_DIR)/staging_dir/host/bin
++	[ -d $(STAGING_DIR_HOST)/lib/grub ] && { mkdir -p $(PKG_BUILD_DIR)/staging_dir/host/lib && cp -a $(STAGING_DIR_HOST)/lib/grub $(PKG_BUILD_DIR)/staging_dir/host/lib; } || true
+ 	$(MAKE) -C $(PKG_BUILD_DIR) package_index
+	$(TAR) c -C $(BUILD_DIR) $(IB_NAME) | bzip2 -c > $@
+ 
