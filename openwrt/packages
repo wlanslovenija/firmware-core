@@ -90,3 +90,5 @@ valgrind
 kmod-ath9k-htc
 netmeasured
 apcupsd
+kmod-ledtrig-netdev
+kmod-ledtrig-gpio
