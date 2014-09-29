@@ -7,7 +7,7 @@ WORKDIR /buildsystem
 
 RUN apt-get -q -q update && \
  apt-get --no-install-recommends --yes --force-yes install \
- build-essential git subversion quilt gawk unzip python wget zlib1g zlib1g-dev libncurses5 libncurses5-dev \
+ build-essential git subversion quilt gawk unzip python wget zlib1g-dev libncurses5-dev \
  fakeroot ca-certificates && \
  ./scripts/prepare && \
  rm -rf .git && \
