@@ -46,10 +46,18 @@ openwrt_builder_cleanup()
 openwrt_builder()
 {
   local arch=$1
-  local build_dir=${workdir}/${BUILD_DIR}/builder.${arch}.$$
+  local build_dir=${workdir}/${BUILD_DIR}/builders/builder.${arch}.$$
 
   # Make hardlinks to avoid space duplication but to still isolate builds
-  cp -lr ${workdir}/${BUILD_DIR}/openwrt ${build_dir}
+  cp -lr ${workdir}/${BUILD_DIR}/openwrt ${build_dir} 2>/dev/null || {
+    # In case hardlinking fails, fall-back to making a copy
+    log "Fall-back to standard copy."
+    rm -rf ${build_dir}
+    cp -a ${workdir}/${BUILD_DIR}/openwrt ${build_dir} || {
+      log "Build directory copy has failed!"
+      exit 1
+    }
+  }
   
   # Prepare configuration file and build the bastard
   cd ${build_dir}
@@ -131,8 +139,9 @@ done
 
 # Cleanup previous builder leftovers
 log "Cleaning up previous builder leftovers..."
-rm -rf ${workdir}/${BUILD_DIR}/builder.*
+rm -rf ${workdir}/${BUILD_DIR}/builders/*
 rm -rf ${workdir}/${BUILD_DIR}/release/*
+mkdir -p ${workdir}/${BUILD_DIR}/builders
 
 # Generate build configurations
 log "Generating build configurations..."

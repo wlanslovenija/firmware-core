@@ -1,0 +1,14 @@
+#!/bin/bash -e
+
+if [ -n "${BUILDER_PUBLIC_KEY}" ]; then
+  mkdir -p /builder/.ssh
+  chown builder:builder /builder/.ssh
+  chmod 700 /builder/.ssh
+  echo "${BUILDER_PUBLIC_KEY}" > /builder/.ssh/authorized_keys
+  chmod 600 /builder/.ssh/authorized_keys
+fi
+
+mkdir -p -m0755 /var/run/sshd
+
+exec /usr/sbin/sshd -D -e 2>&1
+
