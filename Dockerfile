@@ -14,8 +14,11 @@ RUN apt-get -q -q update && \
 
 ADD ./docker/base/etc /etc
 
-ONBUILD ADD ./version /buildsystem/openwrt/version
-ONBUILD RUN ./scripts/prepare && \
+ONBUILD ADD ./platform /buildsystem/platform
+ONBUILD ADD ./version /buildsystem/version
+ONBUILD RUN export FW_PLATFORM="$(cat platform)" && \
+ mv version "/buildsystem/${FW_PLATFORM}/version" && \
+ ./scripts/prepare ${FW_PLATFORM} && \
  rm -rf .git && \
  chown -R builder:builder build
 
