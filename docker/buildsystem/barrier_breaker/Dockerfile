@@ -13,8 +13,8 @@ ONBUILD RUN export FW_BUILDER_ARCH="$(cat /buildsystem/arch)" && \
  tar xf imagebuilder.${FW_BUILDER_ARCH}.tar.bz2 -C /builder/imagebuilder --strip-components 1 && \
  rm -f imagebuilder.${FW_BUILDER_ARCH}.tar.bz2 && \
  mv packages /builder/packages && \
- echo "platform=openwrt" > /builder/packages/metadata && \
- echo "architecture=${FW_BUILDER_ARCH}" >> /builder/packages/metadata && \
- echo "version=${FW_BUILDER_VER}" >> /builder/packages/metadata && \
+ echo -n "{\"platform\": \"openwrt\", " > /builder/packages/metadata && \
+ echo -n "\"architecture\": \"${FW_BUILDER_ARCH}\", " >> /builder/packages/metadata && \
+ echo "\"version\": \"${FW_BUILDER_VER}\"}" >> /builder/packages/metadata && \
  { rm -rf /buildsystem 2>/dev/null || true; }
 
