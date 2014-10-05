@@ -11,6 +11,7 @@ ONBUILD RUN export FW_BUILDER_ARCH="$(cat /buildsystem/arch)" && \
  cd /buildsystem/build/release/${FW_BUILDER_ARCH} && \
  mkdir -p /builder/imagebuilder && \
  tar xf imagebuilder.${FW_BUILDER_ARCH}.tar.bz2 -C /builder/imagebuilder --strip-components 1 && \
+ chown -R builder:builder /builder/imagebuilder && \
  rm -f imagebuilder.${FW_BUILDER_ARCH}.tar.bz2 && \
  mv packages /builder/packages && \
  echo -n "{\"platform\": \"openwrt\", " > /builder/packages/metadata && \
