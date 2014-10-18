@@ -27,6 +27,15 @@ openwrt_build_configure()
   local config=${workdir}/${BUILD_DIR}/openwrt/config.${arch}
   $kconfig 'm+' ${config_dir}/generic ${config_dir}/${arch} > ${config}
 
+  # Configure binary distribution repository
+  local fw_version=$(cat ${workdir}/${BUILD_DIR}/openwrt/package/base-files/files/etc/version)
+  local openwrt_version=$(cat ${workdir}/openwrt/version | cut -d ':' -f 3)
+  if [[ -z "${fw_version}" || -z "${openwrt_version}" ]]; then
+    log "Missing firmware and/or OpenWrt version!"
+    exit 1
+  fi
+  echo "CONFIG_VERSION_REPO=\"http://bindist.wlan-si.net/firmware/${fw_version}/openwrt/${openwrt_version}/%T\"" >> ${config}
+
   # Include all common packages
   for pkg in ${all_packages}; do
     echo "CONFIG_PACKAGE_${pkg}=m" >> ${config}
