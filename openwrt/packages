@@ -75,8 +75,6 @@ kmod-video-videobuf2
 mjpg-streamer
 lm4flash
 iwinfo
-rpcd
-rpcd-mod-iwinfo
 nodewatcher-agent
 nodewatcher-agent-mod-general
 nodewatcher-agent-mod-resources
