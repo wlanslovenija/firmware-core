@@ -92,3 +92,5 @@ netmeasured
 apcupsd
 kmod-ledtrig-netdev
 kmod-ledtrig-gpio
+nut
+nut-driver-blazer_usb
