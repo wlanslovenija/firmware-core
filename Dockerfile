@@ -2,6 +2,9 @@ FROM wlanslovenija/runit
 
 MAINTAINER Jernej Kos <jernej@kos.mx>
 
+EXPOSE 22/tcp
+EXPOSE 80/tcp
+
 ADD . /buildsystem
 WORKDIR /buildsystem
 ENV HOME /buildsystem
