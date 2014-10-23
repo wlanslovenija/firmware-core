@@ -91,4 +91,6 @@ apcupsd
 kmod-ledtrig-netdev
 kmod-ledtrig-gpio
 nut
+nut-server
+nut-client
 nut-driver-blazer_usb
