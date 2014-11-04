@@ -7,9 +7,9 @@ provided as a set of Docker_ images.
 
 Pre-built images are available on the public Docker Hub:
 
-  * `wlanslovenija/firmware-base`_ (base image for all builders)
-  * `wlanslovenija/openwrt-buildsystem`_ (base image for OpenWrt builders)
-  * `wlanslovenija/openwrt-builder`_ (actual builders)
+* `wlanslovenija/firmware-base`_ (base image for all builders)
+* `wlanslovenija/openwrt-buildsystem`_ (base image for OpenWrt builders)
+* `wlanslovenija/openwrt-builder`_ (actual builders)
 
 .. _Docker: https://www.docker.com
 .. _wlanslovenija/firmware-base: https://registry.hub.docker.com/u/wlanslovenija/firmware-base/
