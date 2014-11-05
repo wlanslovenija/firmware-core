@@ -23,5 +23,6 @@ ONBUILD RUN export FW_PLATFORM="$(cat platform)" && \
  mv version "/buildsystem/${FW_PLATFORM}/version" && \
  ./scripts/prepare ${FW_PLATFORM} && \
  rm -rf .git && \
+ sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd && \
  chown -R builder:builder build
 
