@@ -3,3 +3,4 @@
 010-imagebuilder_grub2.patch -p0
 001-fix_kernel_build_xargs.patch -p0
 100-regulatory_test.patch -p0
+006-tplink-writable-uboot.patch -p0
