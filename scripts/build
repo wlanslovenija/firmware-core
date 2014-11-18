@@ -34,7 +34,7 @@ openwrt_build_configure()
     log "Missing firmware and/or OpenWrt version!"
     exit 1
   fi
-  echo "CONFIG_VERSION_REPO=\"http://bindist.wlan-si.net/firmware/${fw_version}/openwrt/${openwrt_version}/%T\"" >> ${config}
+  echo "CONFIG_VERSION_REPO=\"http://${FW_PACKAGE_HOST:-bindist.wlan-si.net}/firmware/${fw_version}/openwrt/${openwrt_version}/%T\"" >> ${config}
 
   # Include all common packages
   for pkg in ${all_packages}; do

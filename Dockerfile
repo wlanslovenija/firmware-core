@@ -5,6 +5,8 @@ MAINTAINER Jernej Kos <jernej@kos.mx>
 EXPOSE 22/tcp
 EXPOSE 80/tcp
 
+ENV FW_PACKAGE_HOST packages.wlan-si.net
+
 ADD . /buildsystem
 WORKDIR /buildsystem
 ENV HOME /buildsystem
