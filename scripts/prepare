@@ -62,7 +62,10 @@ cat ${workdir}/openwrt/feeds/${openwrt_path_name} >> ${OPENWRT_CHECKOUT_DIR}/fee
 log "Applying patches for OpenWRT base tree..."
 cd ${OPENWRT_CHECKOUT_DIR}
 ln -s ${workdir}/openwrt/patches/${openwrt_path_name} patches
-quilt push -f -a
+quilt push -f -a || {
+  log "ERROR: Failed to apply patches."
+  exit 1
+}
 
 # Update version file and banner
 echo "git.${firmware_version}" > package/base-files/files/etc/version
