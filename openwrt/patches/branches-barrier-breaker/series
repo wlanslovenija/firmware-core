@@ -4,3 +4,4 @@
 001-fix_kernel_build_xargs.patch -p0
 100-regulatory_test.patch -p0
 006-tplink-writable-uboot.patch -p0
+001-fix-lantiq-vpe-undefined-ref.patch -p0

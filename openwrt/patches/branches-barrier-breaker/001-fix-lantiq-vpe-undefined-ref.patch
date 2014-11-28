@@ -1,0 +1,22 @@
+Index: target/linux/lantiq/patches-3.10/0153-lantiq-VPE-softdog.patch
+===================================================================
+--- target/linux/lantiq/patches-3.10/0153-lantiq-VPE-softdog.patch.orig	2014-11-26 11:21:54.152426664 +0100
++++ target/linux/lantiq/patches-3.10/0153-lantiq-VPE-softdog.patch	2014-11-28 10:56:32.984760331 +0100
+@@ -160,12 +160,12 @@
+ 
+ --- a/arch/mips/lantiq/Makefile	2014-10-15 21:41:46.000000000 +0200
+ +++ b/arch/mips/lantiq/Makefile	2014-10-19 22:44:44.000000000 +0200
+-@@ -4,7 +4,7 @@
+- # under the terms of the GNU General Public License version 2 as published
+- # by the Free Software Foundation.
++@@ -6,6 +6,8 @@
+  
+--obj-y := irq.o clk.o prom.o
+-+obj-y := irq.o clk.o prom.o softdog_vpe.o
++ obj-y := irq.o clk.o prom.o
+  
+++obj-$(CONFIG_MIPS_VPE_LOADER) += softdog_vpe.o
+++
+  obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
+  
++ obj-$(CONFIG_SOC_TYPE_XWAY) += xway/
