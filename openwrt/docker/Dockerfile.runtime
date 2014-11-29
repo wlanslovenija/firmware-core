@@ -1,0 +1,3 @@
+FROM wlanslovenija/firmware-runtime
+
+MAINTAINER Jernej Kos <jernej@kos.mx>

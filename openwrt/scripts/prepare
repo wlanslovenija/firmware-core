@@ -1,0 +1,84 @@
+#!/bin/bash
+
+openwrt_label="$1"
+openwrt_path="$2"
+openwrt_rev="$3"
+work_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )
+platform_dir="${work_dir}/openwrt"
+build_dir="${work_dir}/build"
+checkout_dir="${build_dir}/openwrt"
+
+if [[ -z "${openwrt_label}" || -z "${openwrt_path}" || -z "${openwrt_rev}" ]]; then
+  echo "ERROR: Usage: $0 <label> <path> <revision>"
+  exit 1
+fi
+
+# Check if all utilities that we need are ready for use
+for program in quilt svn
+do
+  p=$(which $program)
+  if [ "$p" == "" ]; then
+    echo "ERROR: $program not found."
+    exit 1
+  fi
+done
+
+# Check for proper working directory
+if [[ ! -d  ${platform_dir} ]]; then
+  echo "ERROR: Invalid working directory!"
+  exit 1
+fi
+
+mkdir -p ${build_dir}
+
+# Get version identifier
+firmware_version=$(git describe --always)
+
+# Now that we have everything verified, first checkout the OpenWRT repository
+openwrt_path_name="${openwrt_path//\//-}"
+openwrt_path_name="${openwrt_path_name//_/-}"
+
+echo "OpenWRT path: ${openwrt_path}"
+echo "OpenWRT revision: ${openwrt_rev}"
+echo "Checking out OpenWRT, this could take some time..."
+
+rm -rf ${checkout_dir}
+svn co -q -r ${openwrt_rev} svn://svn.openwrt.org/openwrt/${openwrt_path} ${checkout_dir}
+
+echo ${openwrt_label} > ${checkout_dir}/.label
+
+# Inject feeds and configurations
+echo "Configuring feeds..."
+echo "src-git nodewatcher git://github.com/wlanslovenija/firmware-packages-opkg.git" > ${checkout_dir}/feeds.conf
+cat ${platform_dir}/feeds/${openwrt_path_name} >> ${checkout_dir}/feeds.conf
+
+# Patch OpenWRT
+echo "Applying patches for OpenWRT base tree..."
+cd ${checkout_dir}
+ln -s ${platform_dir}/patches/${openwrt_path_name} patches
+quilt push -f -a || {
+  echo "ERROR: Failed to apply patches."
+  exit 1
+}
+
+# Update version file and banner
+echo "git.${firmware_version}" > package/base-files/files/etc/version
+echo "
+ +-------------------------------------------------+
+ | wlan slovenia                  open.wlan-si.net |
+ |          node                                   |
+ +-------------------------------------------------+
+ *) FIRMWARE VERSION: git.${firmware_version}
+
+" > package/base-files/files/etc/banner
+
+# Importing feeds
+echo "Importing feeds..."
+./scripts/feeds update -a >/dev/null
+
+for package in $(cat ${platform_dir}/packages); do
+  ./scripts/feeds install ${package}
+done
+
+# Preparation is now completed
+echo "Preparation completed, you may now build the firmware."

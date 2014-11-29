@@ -1,0 +1,26 @@
+#!/bin/bash
+
+architecture="$1"
+work_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )
+platform_dir="${work_dir}/openwrt"
+build_dir="${work_dir}/build"
+checkout_dir="${build_dir}/openwrt"
+release_dir="${build_dir}/release"
+
+if [ ! -f ${checkout_dir}/.toolchain_built ]; then
+  echo "ERROR: Toolchain not built!"
+  exit 1
+fi
+
+# Build imagebuilder
+echo "Building the imagebuilder..."
+cd ${checkout_dir}
+make || {
+    echo "ERROR: Failed to build the imagebuilder!"
+    exit 1
+}
+
+echo "Extracting the imagebuilder..."
+mkdir -p ${release_dir}
+mv ${checkout_dir}/bin/*/OpenWrt-ImageBuilder-*.tar.bz2 ${release_dir}/imagebuilder.tar.bz2
+mv ${checkout_dir}/bin/*/packages ${release_dir}
