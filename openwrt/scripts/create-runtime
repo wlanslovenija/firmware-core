@@ -1,14 +1,12 @@
 #!/bin/bash
 
-branches="barrier_breaker:bb chaos_calmer:cc"
-
 work_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )
 platform_dir="${work_dir}/openwrt"
 version=$(git describe --always)
 
 echo "Creating runtime Docker containers..."
-for branch in $branches; do
-  short_branch=$(echo $branch | cut -d ':' -f 2)
+for branch in $(cat ${platform_dir}/branches); do
+  short_branch=$(echo $branch | cut -d ':' -f 4)
   branch=$(echo $branch | cut -d ':' -f 1)
 
   for architecture in $(cat ${platform_dir}/architectures); do
