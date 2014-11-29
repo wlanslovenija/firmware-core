@@ -1,9 +1,5 @@
 #!/bin/bash
 
-branches="barrier_breaker:branches/barrier_breaker:43321
-chaos_calmer:trunk:42949
-"
-
 template_buildsystem="
 FROM wlanslovenija/firmware-base
 
@@ -46,7 +42,7 @@ docker_dir="${work_dir}/docker/openwrt"
 
 echo "Generating Dockerfiles..."
 rm -rf ${docker_dir}
-for branch in $branches; do
+for branch in $(cat ${platform_dir}/branches); do
   path=$(echo $branch | cut -d ':' -f 2)
   rev=$(echo $branch | cut -d ':' -f 3)
   branch=$(echo $branch | cut -d ':' -f 1)
