@@ -35,7 +35,7 @@ echo "Generating build configuration..."
 kconfig=${checkout_dir}/scripts/kconfig.pl
 config_dir=${platform_dir}/configs
 config=${checkout_dir}/config.${architecture}
-$kconfig 'm+' ${config_dir}/generic ${config_dir}/${arch} > ${config}
+$kconfig 'm+' ${config_dir}/generic ${config_dir}/${architecture} > ${config}
 
 # Configure binary distribution repository
 fw_version=$(cat ${checkout_dir}/package/base-files/files/etc/version)
