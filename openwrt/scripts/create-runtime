@@ -18,10 +18,14 @@ for branch in $(cat ${platform_dir}/branches); do
 
     if [ "$?" == "0" ]; then
       echo "ok"
-      #docker push ${image_name} 2>/dev/null || {
-      #  echo "ERROR: Failed to push image!"
-      #  exit 1
-      #}
+
+      echo -n "  - Pusing image ${image_name}... "
+      docker push ${image_name} >/dev/null 2>/dev/null
+      if [ "$?" == "0" ]; then
+        echo "ok"
+      else
+        echo "failed!"
+      fi
     else
       echo "(skipped)"
     fi
