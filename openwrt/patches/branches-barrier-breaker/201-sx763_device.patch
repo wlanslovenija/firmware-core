@@ -1,0 +1,138 @@
+Index: target/linux/lantiq/base-files/etc/uci-defaults/02_network
+===================================================================
+--- target/linux/lantiq/base-files/etc/uci-defaults/02_network	(revision 42455)
++++ target/linux/lantiq/base-files/etc/uci-defaults/02_network	(working copy)
+@@ -87,6 +87,8 @@
+ 	;;
+ 
+ ACMP252|GIGASX76X)
++	lan_mac=$(mtd_get_mac_ascii uboot_env ethaddr)
++	wan_mac=$(macaddr_add "$lan_mac" 1)
+ 	ucidef_set_interface_lan "eth0.1"
+ 	ucidef_add_switch "switch0" "1" "1"
+ 	ucidef_add_switch_vlan "switch0" "1" "4 3 2 1 5t"
+Index: target/linux/lantiq/dts/GIGASX76X.dts
+===================================================================
+--- target/linux/lantiq/dts/GIGASX76X.dts	(revision 42455)
++++ target/linux/lantiq/dts/GIGASX76X.dts	(working copy)
+@@ -6,7 +6,7 @@
+ 	model = "GIGASX76X - Gigaset SX761,SX762,SX763";
+ 
+ 	chosen {
+-		bootargs = "console=ttyLTQ0,115200 init=/etc/preinit";
++		bootargs-append = " console=ttyLTQ0,115200 init=/etc/preinit";
+ 	};
+ 
+ 	memory@0 {
+@@ -29,19 +29,19 @@
+ 				#address-cells = <1>;
+ 				#size-cells = <1>;
+ 
+-				partition@0 {
+-					label = "uboot";
+-					reg = <0x0 0x30000>;
++				partition@e000 {
++					label = "uboot_env";
++					reg = <0xe000 0x2000>;
+ 				};
+ 
+ 				partition@10000 {
+-					label = "uboot_env";
+-					reg = <0x30000 0x10000>;
++					label = "secondary_loader";
++					reg = <0x10000 0x10000>;
+ 				};
+ 
+-				partition@40000 {
++				partition@20000 {
+ 					label = "firmware";
+-					reg = <0x40000 0x7c0000>;
++					reg = <0x20000 0x7e0000>;
+ 				};
+ 			};
+ 
+@@ -87,8 +87,27 @@
+ 			gpio-reset = <&gpio 21 0>;
+ 			req-mask = <0x1>;
+ 		};
++
++		stp: stp@E100BB0 {
++			compatible = "lantiq,gpio-stp-xway";
++			reg = <0xE100BB0 0x40>;
++			#gpio-cells = <2>;
++			gpio-controller;
++
++			lantiq,shadow = <0xffff>;
++			lantiq,groups = <0x3>;
++			lantiq,dsl = <0x0>;
++			lantiq,phy1 = <0x0>;
++			lantiq,phy2 = <0x0>;
++			/* lantiq,rising; */
++		};
+ 	};
+ 
++	ath5k_eep {
++		compatible = "ath5k,eeprom";
++		ath,sx763_hack;
++        };
++
+ 	gpio-keys-polled {
+ 		compatible = "gpio-keys-polled";
+ 		#address-cells = <1>;
+@@ -102,6 +121,43 @@
+ 		};
+ 	};
+ 
++	gpio-leds {
++		compatible = "gpio-leds";
++
++		adsl {					
++			label = "adsl";
++			gpios = <&stp 2 1>;
++		};
++		line {				
++			label = "line";
++			gpios = <&stp 5 1>;
++		};
++		online {				
++			label = "online";
++			gpios = <&stp 7 1>;
++		};
++		usb {				
++			label = "usb";
++			gpios = <&stp 9 1>;
++		};
++		wlan {					
++			label = "wlan";
++			gpios = <&stp 20 1>;
++		};
++		voip {
++			label = "voip ";
++			gpios = <&stp 22 1>;
++		};
++		phone1 {				
++			label = "phone1";
++			gpios = <&stp 24 1>;
++		};
++		phone2 {				
++			label = "phone2";
++			gpios = <&stp 25 1>;
++		};
++	};
++
+ 	gpio_export {
+ 		compatible = "gpio-export";
+ 		#size-cells = <0>;
+Index: target/linux/lantiq/dts/danube.dtsi
+===================================================================
+--- target/linux/lantiq/dts/danube.dtsi	(revision 42455)
++++ target/linux/lantiq/dts/danube.dtsi	(working copy)
+@@ -4,7 +4,7 @@
+ 	compatible = "lantiq,xway", "lantiq,danube";
+ 
+ 	chosen {
+-		bootargs = "console=ttyLTQ0,115200 init=/etc/preinit";
++		bootargs-append = " console=ttyLTQ0,115200 init=/etc/preinit";
+ 	};
+ 
+ 	cpus {
