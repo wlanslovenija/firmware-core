@@ -5,3 +5,5 @@
 100-regulatory_test.patch -p0
 006-tplink-writable-uboot.patch -p0
 001-fix-lantiq-vpe-undefined-ref.patch -p0
+200-sx763_eeprom.patch -p0
+201-sx763_device.patch -p0
