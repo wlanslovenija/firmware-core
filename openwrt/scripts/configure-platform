@@ -63,6 +63,9 @@ make defconfig || {
   exit 1
 }
 
+# Include kernel build options
+awk '/^(#[[:space:]]+)?CONFIG_KERNEL/' config.${architecture} >> .config
+
 # Build tools
 echo "Building tools..."
 make tools/install || {
