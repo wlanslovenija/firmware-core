@@ -51,72 +51,99 @@ Index: target/linux/lantiq/dts/GIGASX76X.dts
  				};
  			};
  
-@@ -87,8 +87,27 @@
- 			gpio-reset = <&gpio 21 0>;
- 			req-mask = <0x1>;
- 		};
+@@ -57,19 +57,34 @@
+		};
+
+		gpio: pinmux@E100B10 {
++			compatible = "lantiq,pinctrl-xway";
+			pinctrl-names = "default";
+			pinctrl-0 = <&state_default>;
+
++			#gpio-cells = <2>;
++			gpio-controller;
++			reg = <0xE100B10 0xA0>;
 +
-+		stp: stp@E100BB0 {
+			state_default: pinmux {
+				stp {
+					lantiq,groups = "stp";
+					lantiq,function = "stp";
++					lantiq,pull = <2>;
++					lantiq,open-drain = <0>;
++					lantiq,output = <1>;
+				};
+			};
+		};
+
+-		gpios: stp@E100BB0 {
++		stp0: stp@E100BB0 {
+			status = "okay";
 +			compatible = "lantiq,gpio-stp-xway";
 +			reg = <0xE100BB0 0x40>;
 +			#gpio-cells = <2>;
 +			gpio-controller;
 +
-+			lantiq,shadow = <0xffff>;
++			lantiq,shadow = <0xfff>;
 +			lantiq,groups = <0x3>;
-+			lantiq,dsl = <0x0>;
-+			lantiq,phy1 = <0x0>;
-+			lantiq,phy2 = <0x0>;
-+			/* lantiq,rising; */
-+		};
- 	};
- 
+		};
+
+		etop@E180000 {
+@@ -89,6 +104,11 @@
+		};
+	};
+
 +	ath5k_eep {
 +		compatible = "ath5k,eeprom";
 +		ath,sx763_hack;
 +        };
 +
- 	gpio-keys-polled {
- 		compatible = "gpio-keys-polled";
- 		#address-cells = <1>;
-@@ -102,6 +121,43 @@
- 		};
- 	};
- 
+	gpio-keys-polled {
+		compatible = "gpio-keys-polled";
+		#address-cells = <1>;
+@@ -100,8 +120,50 @@
+			gpios = <&gpio 14 0>;
+			linux,code = <0x198>;
+		};
++		wps {
++			label = "wps";
++			gpios = <&gpio 22 1>;
++			linux,code = <0x211>;
++		};
+	};
+
 +	gpio-leds {
 +		compatible = "gpio-leds";
 +
 +		adsl {					
 +			label = "adsl";
-+			gpios = <&stp 2 1>;
++			gpios = <&stp0 9 0>;
 +		};
 +		line {				
 +			label = "line";
-+			gpios = <&stp 5 1>;
++			gpios = <&stp0 14 0>;
 +		};
 +		online {				
 +			label = "online";
-+			gpios = <&stp 7 1>;
++			gpios = <&stp0 15 0>;
 +		};
 +		usb {				
 +			label = "usb";
-+			gpios = <&stp 9 1>;
++			gpios = <&stp0 10 0>;
 +		};
 +		wlan {					
 +			label = "wlan";
-+			gpios = <&stp 20 1>;
++			gpios = <&stp0 11 0>;
 +		};
 +		voip {
 +			label = "voip ";
-+			gpios = <&stp 22 1>;
++			gpios = <&stp0 8 0>;
 +		};
 +		phone1 {				
 +			label = "phone1";
-+			gpios = <&stp 24 1>;
++			gpios = <&stp0 13 0>;
 +		};
 +		phone2 {				
 +			label = "phone2";
-+			gpios = <&stp 25 1>;
++			gpios = <&stp0 12 0>;
 +		};
 +	};
 +
