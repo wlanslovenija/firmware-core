@@ -2,7 +2,7 @@ Firmware Builders for nodewatcher
 =================================
 
 This repository contains OpenWrt-based firmware builders for building
-wlan slovenija firmware images. To ease deployment, the builders are 
+*nodewatcher* firmware images. To ease deployment, the builders are
 provided as a set of Docker_ images.
 
 Pre-built images are available on the public Docker Hub:
