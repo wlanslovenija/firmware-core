@@ -49,7 +49,7 @@ echo ${openwrt_label} > ${checkout_dir}/.label
 
 # Inject feeds and configurations
 echo "Configuring feeds..."
-echo "src-git nodewatcher git://github.com/wlanslovenija/firmware-packages-opkg.git" > ${checkout_dir}/feeds.conf
+echo "src-git nodewatcher https://github.com/wlanslovenija/firmware-packages-opkg.git" > ${checkout_dir}/feeds.conf
 cat ${platform_dir}/feeds/${openwrt_path_name} >> ${checkout_dir}/feeds.conf
 
 # Patch OpenWRT
@@ -74,7 +74,18 @@ echo "
 
 # Importing feeds
 echo "Importing feeds..."
-./scripts/feeds update -a >/dev/null
+./scripts/feeds update -a || {
+  echo "ERROR: Failed to update feeds."
+  exit 1
+}
+
+# Ensure that all feeds are present
+for feed in $(cat feeds.conf | awk '{print $2}'); do
+  [ -d feeds/${feed} ] || {
+    echo "ERROR: Feed '${feed}' is missing (failure to import feed?)."
+    exit 1
+  }
+done
 
 for package in $(cat ${platform_dir}/packages); do
   ./scripts/feeds install ${package}
