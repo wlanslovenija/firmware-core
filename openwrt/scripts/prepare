@@ -43,7 +43,7 @@ echo "OpenWRT revision: ${openwrt_rev}"
 echo "Checking out OpenWRT, this could take some time..."
 
 rm -rf ${checkout_dir}
-svn co -q -r ${openwrt_rev} svn://svn.openwrt.org/openwrt/${openwrt_path} ${checkout_dir}
+git clone -b for-14.07 --single-branch git://github.com/goran-mahovlic/packages.git ${checkout_dir}
 
 echo ${openwrt_label} > ${checkout_dir}/.label
 
@@ -51,6 +51,8 @@ echo ${openwrt_label} > ${checkout_dir}/.label
 echo "Configuring feeds..."
 echo "src-git nodewatcher https://github.com/wlanslovenija/firmware-packages-opkg.git" > ${checkout_dir}/feeds.conf
 cat ${platform_dir}/feeds/${openwrt_path_name} >> ${checkout_dir}/feeds.conf
+
+# Adding feeds
 
 # Patch OpenWRT
 echo "Applying patches for OpenWRT base tree..."
