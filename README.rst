@@ -84,6 +84,20 @@ Of course probably you want to use some reverse HTTP proxy in front and make the
 
 This is also how nodewatcher does it. See that builder's git revision, OpenWrt release, and platform are part of the URL.
 
+API
+---
+
+The following is the OpenWrt Cloud Builder API 0.1 standard. We are proposing it to facilitate easy sharing, reuse,
+and swapping of builders and testing out of new firmwares in the wider OpenWrt community.
+
+* there is a system user `builder` under which you should be running the build
+* OpenWrt image builder system is available under `/builder/imagebuilder/`
+
+To facilitate cloud use the following is options, but recommended.
+
+* OpenWrt packages are available through the builder over HTTP with feeds directly under the HTTP root so ``packages`` feed is available under ``/packages/``
+* support for SSH access using the ``BUILDER_PUBLIC_KEY`` to authenticate the client connection
+
 Source Code, Issue Tracker and Mailing List
 -------------------------------------------
 
