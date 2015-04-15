@@ -93,7 +93,7 @@ and swapping of builders and testing out of new firmwares in the wider OpenWrt c
 * There is a system user ``builder`` under which you should be running the build.
 * OpenWrt image builder system is available under ``/builder/imagebuilder/``.
 
-To facilitate the cloud builder use of the following is optional, but recommended.
+To facilitate the cloud use of builders the following is optional, but recommended.
 
 * OpenWrt packages are available through the builder over HTTP with feeds directly under the HTTP root so ``packages`` feed is available under ``/packages/``.
 * A metadata file served over HTTP at ``/metadata``, encoded as a JSON object with the following fields:
