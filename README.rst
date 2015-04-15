@@ -49,7 +49,7 @@ Once you are in, you can build the image you are interested in. For example::
 
 You can use only packages which were premade when creating this builder. You cannot compile custom packages at this step anymore.
 
-Resulting image will be in ``/builder/imagebuilderbin/ar71xx/``.
+Resulting image will be in ``/builder/imagebuilder/bin/ar71xx/``.
 
 Accessing Builded Images
 ------------------------
@@ -65,7 +65,7 @@ Builders contain an HTTP server which you can use to offer OPKG_ packages.
 
 .. _OPKG: http://wiki.openwrt.org/doc/techref/opkg
 
-If assume that your builder container is available directly on ``example.com``, then you could add to ``/etc/opkg.conf``
+If we assume that your builder container is available directly on ``example.com``, then you could add to ``/etc/opkg.conf``
 the following package repositories::
 
     src/gz barrier_breaker_base http://example.com/base
