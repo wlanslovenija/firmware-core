@@ -84,8 +84,8 @@ Of course probably you want to use some reverse HTTP proxy in front and make the
 
 This is also how nodewatcher does it. See that builder's git revision, OpenWrt release, and platform are parts of the URL.
 
-API
----
+OpenWrt Cloud Builder API
+-------------------------
 
 The following is the OpenWrt Cloud Builder API 0.1 standard. We are proposing it to facilitate easy sharing, reuse,
 and swapping of builders and testing out of new firmwares in the wider OpenWrt community.
