@@ -31,6 +31,59 @@ to be configured in its builder configuration.
 
 .. _nodewatcher: http://nodewatcher.net
 
+Building Images
+---------------
+
+You san SSH into the builder using the private keys which corresponds to the ``BUILDER_PUBLIC_KEY`` you provided.
+
+Alternativelly, you can use Docker to connect to the running builder container locally::
+
+    docker exec -t -i builder-openwrt-v3fb97c2-bb-ar71xx bash
+
+Once you are in, you can build the image you are interested in. For example::
+
+    cd /builder/imagebuilder
+    su builder
+    
+    make image PROFILE="TLWR1043" PACKAGES="wireless-tools wpad-mini kmod-netem kmod-pktgen ntpclient qos-scripts iperf horst wireless-info cronscripts iwinfo nodewatcher-agent nodewatcher-agent-mod-general nodewatcher-agent-mod-resources nodewatcher-agent-mod-interfaces nodewatcher-agent-mod-wireless nodewatcher-agent-mod-keys_ssh nodewatcher-agent-mod-clients uhttpd ip-full"
+
+You can use only packages which were premade when creating this builder. You cannot compile custom packages at this step anymore.
+
+Resulting image will be in ``/builder/imagebuilderbin/ar71xx/``.
+
+Accessing Builded Images
+------------------------
+
+You can use ``scp`` to copy the image out. Alternativelly, you can use Docker::
+
+    docker cp builder-openwrt-v3fb97c2-bb-ar71xx:/builder/imagebuilder/bin/ar71xx/openwrt-ar71xx-generic-tl-wr1043nd-v1-squashfs-factory.bin .
+
+Accessing OPKG Packages
+-----------------------
+
+Builders contain an HTTP server which you can use to offer OPKG_ packages.
+
+.. _OPKG: http://wiki.openwrt.org/doc/techref/opkg
+
+If assume that your builder container is available directly on ``example.com``, then you could add to ``/etc/opkg.conf``
+the following package repositories::
+
+    src/gz barrier_breaker_base http://example.com/base
+    src/gz barrier_breaker_nodewatcher http://example.com/nodewatcher
+    src/gz barrier_breaker_openwrt http://example.com/openwrt
+    src/gz barrier_breaker_openwrtlegacy http://example.com/openwrtlegacy
+    src/gz barrier_breaker_routing http://example.com/routing
+
+Of course probably you want to use some reverse HTTP proxy in front and make the URLs more like::
+
+    src/gz barrier_breaker_base http://example.com/firmware/git.3fb97c2/openwrt/barrier_breaker/ar71xx/base
+    src/gz barrier_breaker_nodewatcher http://example.com/firmware/git.3fb97c2/openwrt/barrier_breaker/ar71xx/nodewatcher
+    src/gz barrier_breaker_openwrt http://example.com/firmware/git.3fb97c2/openwrt/barrier_breaker/ar71xx/openwrt
+    src/gz barrier_breaker_openwrtlegacy http://example.com/firmware/git.3fb97c2/openwrt/barrier_breaker/ar71xx/openwrtlegacy
+    src/gz barrier_breaker_routing http://example.com/firmware/git.3fb97c2/openwrt/barrier_breaker/ar71xx/routing
+
+This is also how nodewatcher does it. See that builder's git revision, OpenWrt release, and platform are part of the URL.
+
 Source Code, Issue Tracker and Mailing List
 -------------------------------------------
 
