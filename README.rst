@@ -82,7 +82,7 @@ Of course probably you want to use some reverse HTTP proxy in front and make the
     src/gz barrier_breaker_openwrtlegacy http://example.com/firmware/git.3fb97c2/openwrt/barrier_breaker/ar71xx/openwrtlegacy
     src/gz barrier_breaker_routing http://example.com/firmware/git.3fb97c2/openwrt/barrier_breaker/ar71xx/routing
 
-This is also how nodewatcher does it. See that builder's git revision, OpenWrt release, and platform are part of the URL.
+This is also how nodewatcher does it. See that builder's git revision, OpenWrt release, and platform are parts of the URL.
 
 API
 ---
