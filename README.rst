@@ -90,13 +90,19 @@ API
 The following is the OpenWrt Cloud Builder API 0.1 standard. We are proposing it to facilitate easy sharing, reuse,
 and swapping of builders and testing out of new firmwares in the wider OpenWrt community.
 
-* there is a system user `builder` under which you should be running the build
-* OpenWrt image builder system is available under `/builder/imagebuilder/`
+* There is a system user `builder` under which you should be running the build.
+* OpenWrt image builder system is available under `/builder/imagebuilder/`.
 
-To facilitate cloud use the following is options, but recommended.
+To facilitate the cloud builder use of the following is optional, but recommended.
 
-* OpenWrt packages are available through the builder over HTTP with feeds directly under the HTTP root so ``packages`` feed is available under ``/packages/``
-* support for SSH access using the ``BUILDER_PUBLIC_KEY`` to authenticate the client connection
+* OpenWrt packages are available through the builder over HTTP with feeds directly under the HTTP root so ``packages`` feed is available under ``/packages/``.
+* A metadata file served over HTTP at ``/metadata``, encoded as a JSON object with the following fields:
+
+  * ``platform`` which should be ``"openwrt"``.
+  * ``architecture`` which should contain the name of the architecture the builder is for (for example ``"ar71xx"``).
+  * ``version`` which should contain a string identifying the version of the builder (for example ``"git.3fb97c2"``).
+
+* Support for SSH access using the ``BUILDER_PUBLIC_KEY`` to authenticate the client connection.
 
 Source Code, Issue Tracker and Mailing List
 -------------------------------------------
