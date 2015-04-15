@@ -90,8 +90,8 @@ OpenWrt Cloud Builder API
 The following is the OpenWrt Cloud Builder API 0.1 standard. We are proposing it to facilitate easy sharing, reuse,
 and swapping of builders and testing out of new firmwares in the wider OpenWrt community.
 
-* there is a system user `builder` under which you should be running the build
-* OpenWrt image builder system is available under `/builder/imagebuilder/`
+* there is a system user ``builder`` under which you should be running the build
+* OpenWrt image builder system is available under ``/builder/imagebuilder/``
 
 To facilitate cloud use the following is options, but recommended.
 
