@@ -82,16 +82,16 @@ Of course probably you want to use some reverse HTTP proxy in front and make the
     src/gz barrier_breaker_openwrtlegacy http://example.com/firmware/git.3fb97c2/openwrt/barrier_breaker/ar71xx/openwrtlegacy
     src/gz barrier_breaker_routing http://example.com/firmware/git.3fb97c2/openwrt/barrier_breaker/ar71xx/routing
 
-This is also how nodewatcher does it. See that builder's git revision, OpenWrt release, and platform are part of the URL.
+This is also how nodewatcher does it. See that builder's git revision, OpenWrt release, and platform are parts of the URL.
 
-API
----
+OpenWrt Cloud Builder API
+-------------------------
 
 The following is the OpenWrt Cloud Builder API 0.1 standard. We are proposing it to facilitate easy sharing, reuse,
 and swapping of builders and testing out of new firmwares in the wider OpenWrt community.
 
-* There is a system user `builder` under which you should be running the build.
-* OpenWrt image builder system is available under `/builder/imagebuilder/`.
+* There is a system user ``builder`` under which you should be running the build.
+* OpenWrt image builder system is available under ``/builder/imagebuilder/``.
 
 To facilitate the cloud builder use of the following is optional, but recommended.
 
