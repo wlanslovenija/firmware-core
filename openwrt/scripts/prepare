@@ -61,6 +61,17 @@ quilt push -f -a || {
   exit 1
 }
 
+# Remove certain core OpenWrt packages as our feed overrides them. If we don't remove
+# them here, they will be ignored.
+override_packages_file="${platform_dir}/override/${openwrt_path_name}/packages"
+if [ -f ${override_packages_file} ]; then
+  echo "Removing base packages that are overriden by our feed..."
+  for package in $(cat ${override_packages_file}); do
+    echo "  ${package}"
+    rm -rf ${checkout_dir}/${package}
+  done
+fi
+
 # Update version file and banner
 echo "git.${firmware_version}" > package/base-files/files/etc/version
 echo "
