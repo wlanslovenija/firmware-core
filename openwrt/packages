@@ -83,6 +83,7 @@ nodewatcher-agent-mod-interfaces
 nodewatcher-agent-mod-wireless
 nodewatcher-agent-mod-keys_ssh
 nodewatcher-agent-mod-clients
+nodewatcher-agent-mod-http_push
 uhttpd-mod-ubus
 block-mount
 valgrind
