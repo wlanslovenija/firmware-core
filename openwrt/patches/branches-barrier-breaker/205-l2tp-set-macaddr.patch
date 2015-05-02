@@ -1,0 +1,15 @@
+Index: target/linux/generic/patches-3.10/998-l2tp-set-macaddr.patch
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ target/linux/generic/patches-3.10/998-l2tp-set-macaddr.patch	2015-05-02 08:17:15.189062332 +0200
+@@ -0,0 +1,10 @@
++--- a/net/l2tp/l2tp_eth.c	2014-07-18 00:58:15.000000000 +0200
+++++ b/net/l2tp/l2tp_eth.c	2015-05-02 08:11:04.989046796 +0200
++@@ -126,6 +126,7 @@
++ 	.ndo_uninit		= l2tp_eth_dev_uninit,
++ 	.ndo_start_xmit		= l2tp_eth_dev_xmit,
++ 	.ndo_get_stats64	= l2tp_eth_get_stats64,
+++	.ndo_set_mac_address	= eth_mac_addr,
++ };
++ 
++ static void l2tp_eth_dev_setup(struct net_device *dev)
