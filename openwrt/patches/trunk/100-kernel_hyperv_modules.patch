@@ -2,7 +2,7 @@ Index: package/kernel/linux/modules/virtual.mk
 ===================================================================
 --- package/kernel/linux/modules/virtual.mk.orig	2014-01-12 10:00:32.550041178 +0100
 +++ package/kernel/linux/modules/virtual.mk	2014-01-12 10:00:32.546041178 +0100
-@@ -168,3 +168,68 @@
+@@ -186,3 +186,68 @@
  endef
  
  $(eval $(call KernelPackage,xen-pcidev))
@@ -78,11 +78,11 @@ Index: target/linux/x86/Makefile
 @@ -11,7 +11,7 @@
  BOARDNAME:=x86
  FEATURES:=squashfs ext4 vdi vmdk pcmcia targz
- SUBTARGETS=generic olpc xen_domu ep80579 net5501 kvm_guest geos alix2 thincan \
--	   rdc
-+	   rdc hv_guest
+-SUBTARGETS=generic xen_domu ep80579 geode kvm_guest rdc 64
++SUBTARGETS=generic xen_domu ep80579 geode kvm_guest rdc 64 hv_guest
+ MAINTAINER:=Felix Fietkau <nbd@openwrt.org>
  
- LINUX_VERSION:=3.3.8
+ KERNEL_PATCHVER:=3.18
  
 Index: target/linux/x86/hv_guest/target.mk
 ===================================================================
@@ -92,10 +92,10 @@ Index: target/linux/x86/hv_guest/target.mk
 +BOARDNAME:=Microsoft Hyper-V guest
 +FEATURES:=ext4 pci usb
 +DEFAULT_PACKAGES += kmod-hyperv-balloon kmod-hyperv-utils kmod-hyperv-net-vsc
-Index: target/linux/x86/hv_guest/config-3.3
+Index: target/linux/x86/hv_guest/config-default
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ target/linux/x86/hv_guest/config-3.3	2014-01-12 10:00:32.550041178 +0100
++++ target/linux/x86/hv_guest/config-default	2014-01-12 10:00:32.550041178 +0100
 @@ -0,0 +1,92 @@
 +CONFIG_ACPI=y
 +# CONFIG_ACPI_AC is not set
