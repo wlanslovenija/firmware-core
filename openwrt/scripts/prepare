@@ -99,7 +99,14 @@ for feed in $(cat feeds.conf | awk '{print $2}'); do
 done
 
 for package in $(cat ${platform_dir}/packages); do
-  ./scripts/feeds install ${package}
+  feed="$(echo ${package} | cut -s -d '@' -f 2)"
+  package="$(echo ${package} | cut -d '@' -f 1)"
+
+  if [ -n "${feed}" ]; then
+    feed="-p ${feed}"
+  fi
+
+  ./scripts/feeds install ${feed} ${package}
 done
 
 # Preparation is now completed

@@ -24,7 +24,7 @@ fi
 
 # Check packages that we need to build
 all_packages=$(grep 'Package:' ${checkout_dir}/feeds/nodewatcher.index | cut -d ':' -f 2)
-all_packages="${all_packages} $(cat ${platform_dir}/packages)"
+all_packages="${all_packages} $(cat ${platform_dir}/packages | cut -d '@' -f 1)"
 
 # Cleanup previous build leftovers
 echo "Cleaning up previous build leftovers..."
