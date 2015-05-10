@@ -62,7 +62,6 @@ solar
 telemetryd
 wireless-info
 cronscripts
-keycfg
 cython
 python-gevent
 python-greenlet
