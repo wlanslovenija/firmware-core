@@ -1,0 +1,6 @@
+005-no_resolv_conf_auto.patch -p0
+100-kernel_hyperv_modules.patch -p0
+010-imagebuilder_grub2.patch -p0
+100-regulatory_test.patch -p0
+006-tplink-writable-uboot.patch -p0
+205-l2tp-set-macaddr.patch -p0

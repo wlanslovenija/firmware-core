@@ -1,0 +1,191 @@
+Index: package/kernel/linux/modules/virtual.mk
+===================================================================
+--- package/kernel/linux/modules/virtual.mk.orig	2014-01-12 10:00:32.550041178 +0100
++++ package/kernel/linux/modules/virtual.mk	2014-01-12 10:00:32.546041178 +0100
+@@ -186,3 +186,68 @@
+ endef
+ 
+ $(eval $(call KernelPackage,xen-pcidev))
++
++
++define KernelPackage/hyperv-balloon
++  SUBMENU:=$(VIRTUAL_MENU)
++  TITLE:=Microsoft Hyper-V balloon driver
++  DEPENDS:=@TARGET_x86_hv_guest
++  KCONFIG:=CONFIG_HYPERV_BALLOON
++  FILES:=$(LINUX_DIR)/drivers/hv/hv_balloon.ko
++  AUTOLOAD:=$(call AutoLoad,06,hv_balloon)
++endef
++
++define KernelPackage/hyperv-balloon/description
++  Microsofot Hyper-V balloon driver.
++endef
++
++$(eval $(call KernelPackage,hyperv-balloon))
++
++
++define KernelPackage/hyperv-net-vsc
++  SUBMENU:=$(VIRTUAL_MENU)
++  TITLE:=Microsoft Hyper-V virtual network driver
++  DEPENDS:=@TARGET_x86_hv_guest
++  KCONFIG:=CONFIG_HYPERV_NET
++  FILES:=$(LINUX_DIR)/drivers/net/hyperv/hv_netvsc.ko
++  AUTOLOAD:=$(call AutoLoad,35,hv_netvsc)
++endef
++
++define KernelPackage/hyperv-net-vsc/description
++ Microsoft Hyper-V virtual network driver.
++endef
++
++$(eval $(call KernelPackage,hyperv-net-vsc))
++
++
++define KernelPackage/hyperv-storage-vsc
++  SUBMENU:=$(VIRTUAL_MENU)
++  TITLE:=Microsoft Hyper-V storage driver
++  DEPENDS:=@TARGET_x86_hv_guest
++  KCONFIG:=CONFIG_HYPERV_STORAGE
++  FILES:=$(LINUX_DIR)/drivers/scsi/hv_storvsc.ko
++  AUTOLOAD:=$(call AutoLoad,35,hv_storvsc)
++endef
++
++define KernelPackage/hyperv-storage-vsc/description
++ Microsoft Hyper-V storage driver.
++endef
++
++$(eval $(call KernelPackage,hyperv-storage-vsc))
++
++
++define KernelPackage/hyperv-utils
++  SUBMENU:=$(VIRTUAL_MENU)
++  TITLE:=Microsoft Hyper-V utils
++  DEPENDS:=@TARGET_x86_hv_guest
++  KCONFIG:=CONFIG_HYPERV_UTILS
++  FILES:=$(LINUX_DIR)/drivers/hv/hv_utils.ko
++  AUTOLOAD:=$(call AutoLoad,35,hv_utils)
++endef
++
++define KernelPackage/hyperv-utils/description
++ Microsoft Hyper-V utils.
++endef
++
++$(eval $(call KernelPackage,hyperv-utils))
++
+Index: target/linux/x86/Makefile
+===================================================================
+--- target/linux/x86/Makefile.orig	2014-01-12 10:00:32.550041178 +0100
++++ target/linux/x86/Makefile	2014-01-12 10:00:32.546041178 +0100
+@@ -11,7 +11,7 @@
+ BOARDNAME:=x86
+ FEATURES:=squashfs ext4 vdi vmdk pcmcia targz
+-SUBTARGETS=generic xen_domu ep80579 geode kvm_guest rdc 64
++SUBTARGETS=generic xen_domu ep80579 geode kvm_guest rdc 64 hv_guest
+ MAINTAINER:=Felix Fietkau <nbd@openwrt.org>
+ 
+ KERNEL_PATCHVER:=3.18
+ 
+Index: target/linux/x86/hv_guest/target.mk
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ target/linux/x86/hv_guest/target.mk	2014-01-12 11:05:58.309904467 +0100
+@@ -0,0 +1,3 @@
++BOARDNAME:=Microsoft Hyper-V guest
++FEATURES:=ext4 pci usb
++DEFAULT_PACKAGES += kmod-hyperv-balloon kmod-hyperv-utils kmod-hyperv-net-vsc
+Index: target/linux/x86/hv_guest/config-default
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ target/linux/x86/hv_guest/config-default	2014-01-12 10:00:32.550041178 +0100
+@@ -0,0 +1,92 @@
++CONFIG_ACPI=y
++# CONFIG_ACPI_AC is not set
++# CONFIG_ACPI_ASUS is not set
++# CONFIG_ACPI_BATTERY is not set
++CONFIG_ACPI_BLACKLIST_YEAR=0
++CONFIG_ACPI_BUTTON=y
++# CONFIG_ACPI_CMPC is not set
++# CONFIG_ACPI_CONTAINER is not set
++# CONFIG_ACPI_CUSTOM_DSDT is not set
++# CONFIG_ACPI_DEBUG is not set
++# CONFIG_ACPI_DOCK is not set
++# CONFIG_ACPI_EC_DEBUGFS is not set
++# CONFIG_ACPI_FAN is not set
++# CONFIG_ACPI_PCI_SLOT is not set
++CONFIG_ACPI_PROCESSOR=y
++# CONFIG_ACPI_PROCESSOR_AGGREGATOR is not set
++# CONFIG_ACPI_PROCFS is not set
++# CONFIG_ACPI_PROCFS_POWER is not set
++# CONFIG_ACPI_PROC_EVENT is not set
++# CONFIG_ACPI_SBS is not set
++# CONFIG_ACPI_THERMAL is not set
++# CONFIG_ACPI_WMI is not set
++# CONFIG_ASUS_LAPTOP is not set
++CONFIG_CONSOLE_TRANSLATIONS=y
++CONFIG_CPU_IDLE_GOV_MENU=y
++CONFIG_DUMMY_CONSOLE=y
++# CONFIG_EEEPC_LAPTOP is not set
++# CONFIG_EFI is not set
++CONFIG_HOTPLUG_PCI=y
++CONFIG_HOTPLUG_PCI_ACPI=y
++# CONFIG_HOTPLUG_PCI_ACPI_IBM is not set
++# CONFIG_HOTPLUG_PCI_COMPAQ is not set
++# CONFIG_HOTPLUG_PCI_CPCI is not set
++# CONFIG_HOTPLUG_PCI_FAKE is not set
++# CONFIG_HOTPLUG_PCI_IBM is not set
++CONFIG_HOTPLUG_PCI_PCIE=y
++# CONFIG_HOTPLUG_PCI_SHPC is not set
++# CONFIG_HPET is not set
++# CONFIG_HP_ACCEL is not set
++CONFIG_HVC_DRIVER=y
++CONFIG_HW_CONSOLE=y
++# CONFIG_HW_RANDOM_VIRTIO is not set
++CONFIG_INPUT=y
++CONFIG_INPUT_KEYBOARD=y
++# CONFIG_INTEL_IPS is not set
++CONFIG_KEYBOARD_ATKBD=y
++# CONFIG_KVM is not set
++# CONFIG_KVM_CLOCK is not set
++# CONFIG_KVM_GUEST is not set
++# CONFIG_LGUEST is not set
++# CONFIG_LGUEST_GUEST is not set
++CONFIG_NLS=y
++CONFIG_NO_HZ=y
++CONFIG_PARAVIRT=y
++CONFIG_PARAVIRT_CLOCK=y
++# CONFIG_PARAVIRT_DEBUG is not set
++CONFIG_PARAVIRT_GUEST=y
++# CONFIG_KVM_DEBUG_FS is not set
++CONFIG_PARAVIRT_TIME_ACCOUNTING=y
++CONFIG_PCIEAER=y
++CONFIG_PCIEPORTBUS=y
++CONFIG_PCI_IOAPIC=y
++CONFIG_PCI_LABEL=y
++CONFIG_PCI_MMCONFIG=y
++CONFIG_PNP=y
++CONFIG_PNPACPI=y
++CONFIG_PNP_DEBUG_MESSAGES=y
++CONFIG_SERIAL_8250_PNP=y
++# CONFIG_THINKPAD_ACPI is not set
++# CONFIG_TOPSTAR_LAPTOP is not set
++# CONFIG_TOSHIBA_BT_RFKILL is not set
++# CONFIG_VGACON_SOFT_SCROLLBACK is not set
++# CONFIG_VIRTIO is not set
++CONFIG_VGA_CONSOLE=y
++CONFIG_VIRTUALIZATION=y
++CONFIG_VT=y
++CONFIG_VT_CONSOLE=y
++# CONFIG_VT_HW_CONSOLE_BINDING is not set
++# CONFIG_VHOST_NET is not set
++# CONFIG_X86_ACPI_CPUFREQ is not set
++# CONFIG_X86_LONGHAUL is not set
++# CONFIG_X86_PAT is not set
++# CONFIG_X86_PCC_CPUFREQ is not set
++CONFIG_X86_PM_TIMER=y
++# CONFIG_X86_POWERNOW_K8 is not set
++# CONFIG_XEN_PRIVILEGED_GUEST is not set
++# CONFIG_XO15_EBOOK is not set
++CONFIG_HYPERV=y
++# CONFIG_HYPERV_UTILS is not set
++# CONFIG_HYPERV_STORAGE is not set
++# CONFIG_HYPERV_NET is not set
++# CONFIG_HID_HYPERV_MOUSE is not set

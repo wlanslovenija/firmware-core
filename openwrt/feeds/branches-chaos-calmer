@@ -1,2 +1,2 @@
-src-svn openwrt svn://svn.openwrt.org/openwrt/branches/packages_12.09
+src-git openwrt https://github.com/openwrt/packages.git;for-15.05
 src-git routing git://github.com/wlanslovenija/openwrt-routing-packages.git
