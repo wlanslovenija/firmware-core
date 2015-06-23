@@ -1,2 +1,3 @@
 src-git openwrt https://github.com/wlanslovenija/openwrt-packages.git;for-14.07
+src-svn openwrtlegacy svn://svn.openwrt.org/openwrt/branches/packages_14.07
 src-git routing https://github.com/wlanslovenija/openwrt-routing-packages.git
