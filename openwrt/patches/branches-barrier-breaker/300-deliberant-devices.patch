@@ -1,0 +1,293 @@
+Index: target/linux/ar71xx/files/arch/mips/ath79/mach-deliberant.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ target/linux/ar71xx/files/arch/mips/ath79/mach-deliberant.c	2015-07-14 17:58:06.298775279 +0200
+@@ -0,0 +1,100 @@
++/*
++ *  DELIBERANT board support
++ *
++ *  Copyright (C) 2010-2012 Gabor Juhos <juhosg@openwrt.org>
++ *  Copyright (C) 2011-2012 Anan Huang <axishero@foxmail.com>
++ *  Copyright (C) 2015 Jernej Kos <jernej@kos.mx>
++ *
++ *  This program is free software; you can redistribute it and/or modify it
++ *  under the terms of the GNU General Public License version 2 as published
++ *  by the Free Software Foundation.
++ */
++
++#include <linux/pci.h>
++#include <linux/phy.h>
++#include <linux/platform_device.h>
++#include <linux/ath9k_platform.h>
++#include <linux/ar8216_platform.h>
++
++#include <asm/mach-ath79/ar71xx_regs.h>
++
++#include "common.h"
++#include "dev-ap9x-pci.h"
++#include "dev-eth.h"
++#include "dev-gpio-buttons.h"
++#include "dev-leds-gpio.h"
++#include "dev-m25p80.h"
++#include "dev-spi.h"
++#include "dev-wmac.h"
++#include "machtypes.h"
++
++#define DELIBERANT_GPIO_BTN_RESET	14
++#define DELIBERANT_GPIO_LED_WPS	13
++#define DELIBERANT_GPIO_LED_WLAN	11
++
++#define DELIBERANT_GPIO_LED_SYSTEM	12
++
++#define DELIBERANT_KEYS_POLL_INTERVAL		20	/* msecs */
++#define DELIBERANT_KEYS_DEBOUNCE_INTERVAL	(3 * DELIBERANT_KEYS_POLL_INTERVAL)
++
++#define DELIBERANT_PCIE_CALDATA_OFFSET	0x5000
++
++static struct gpio_led deliberant_leds_gpio[] __initdata = {
++	{
++		.name		= "deliberant:green:system",
++		.gpio		= DELIBERANT_GPIO_LED_SYSTEM,
++		.active_low	= 1,
++	}, {
++		.name		= "deliberant:green:wps",
++		.gpio		= DELIBERANT_GPIO_LED_WPS,
++		.active_low	= 1,
++	}, {
++		.name		= "deliberant:green:wlan",
++		.gpio		= DELIBERANT_GPIO_LED_WLAN,
++		.active_low	= 1,
++	}
++};
++
++static struct gpio_keys_button deliberant_gpio_keys[] __initdata = {
++	{
++		.desc		= "reset",
++		.type		= EV_KEY,
++		.code		= KEY_RESTART,
++		.debounce_interval = DELIBERANT_KEYS_DEBOUNCE_INTERVAL,
++		.gpio		= DELIBERANT_GPIO_BTN_RESET,
++		.active_low	= 1,
++	}
++};
++
++static void __init deliberant_setup(void)
++{
++	u8 *wifi_mac = (u8 *) KSEG1ADDR(0x1fff1002);
++	u8 *eth_mac = (u8 *) KSEG1ADDR(0x1fff0000);
++	u8 *ee = (u8 *) KSEG1ADDR(0x1fff1000);
++
++	ath79_register_m25p80(NULL);
++
++	ath79_register_leds_gpio(-1, ARRAY_SIZE(deliberant_leds_gpio),
++				 deliberant_leds_gpio);
++	ath79_register_gpio_keys_polled(-1, DELIBERANT_KEYS_POLL_INTERVAL,
++					 ARRAY_SIZE(deliberant_gpio_keys),
++					 deliberant_gpio_keys);
++	ath79_register_wmac(ee, wifi_mac);
++
++	ath79_setup_ar934x_eth_cfg(AR934X_ETH_CFG_MII_GMAC0 |
++				   AR934X_ETH_CFG_MII_GMAC0_SLAVE);
++
++	ath79_register_mdio(1, 0x0);
++	ath79_register_mdio(0, 0x0);
++
++	ath79_init_mac(ath79_eth0_data.mac_addr, eth_mac, 1);
++
++	/* GMAC0 is connected to an AR8327 switch */
++	ath79_eth0_data.phy_if_mode = PHY_INTERFACE_MODE_RGMII;
++	ath79_eth0_data.phy_mask = BIT(0);
++	ath79_eth0_data.mii_bus_dev = &ath79_mdio0_device.dev;
++	ath79_register_eth(0);
++}
++
++MIPS_MACHINE(ATH79_MACH_DELIBERANT, "DELIBERANT",
++	     "Deliberant Generic", deliberant_setup);
+Index: target/linux/ar71xx/patches-3.10/730-MIPS-ath79-add-deliberant.patch
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ target/linux/ar71xx/patches-3.10/730-MIPS-ath79-add-deliberant.patch	2015-07-12 15:02:05.197885917 +0200
+@@ -0,0 +1,55 @@
++Index: linux-3.10.49/arch/mips/ath79/Kconfig
++===================================================================
++--- linux-3.10.49.orig/arch/mips/ath79/Kconfig	2015-07-12 14:32:50.813951821 +0200
+++++ linux-3.10.49/arch/mips/ath79/Kconfig	2015-07-12 14:42:10.417930800 +0200
++@@ -1044,6 +1044,17 @@
++ 	select ATH79_DEV_USB
++ 	select ATH79_DEV_WMAC
++ 
+++config ATH79_MACH_DELIBERANT
+++	bool "Deliberant support"
+++	select SOC_AR934X
+++	select ATH79_DEV_AP9X_PCI if PCI
+++	select ATH79_DEV_ETH
+++	select ATH79_DEV_GPIO_BUTTONS
+++	select ATH79_DEV_LEDS_GPIO
+++	select ATH79_DEV_M25P80
+++	select ATH79_DEV_USB
+++	select ATH79_DEV_WMAC
+++
++ endmenu
++ 
++ config SOC_AR71XX
++Index: linux-3.10.49/arch/mips/ath79/Makefile
++===================================================================
++--- linux-3.10.49.orig/arch/mips/ath79/Makefile	2015-07-12 14:32:50.813951821 +0200
+++++ linux-3.10.49/arch/mips/ath79/Makefile	2015-07-12 14:42:34.245929904 +0200
++@@ -143,3 +143,4 @@
++ obj-$(CONFIG_ATH79_MACH_ZCN_1523H)	+= mach-zcn-1523h.o
++ obj-$(CONFIG_ATH79_MACH_CARAMBOLA2)	+= mach-carambola2.o
++ obj-$(CONFIG_ATH79_MACH_NBG6716)	+= mach-nbg6716.o
+++obj-$(CONFIG_ATH79_MACH_DELIBERANT)	+= mach-deliberant.o
++Index: linux-3.10.49/arch/mips/ath79/machtypes.h
++===================================================================
++--- linux-3.10.49.orig/arch/mips/ath79/machtypes.h	2015-07-12 14:32:50.813951821 +0200
+++++ linux-3.10.49/arch/mips/ath79/machtypes.h	2015-07-12 14:38:06.317939969 +0200
++@@ -184,6 +184,7 @@
++ 	ATH79_MACH_WZR_HP_G450H,	/* Buffalo WZR-HP-G450H */
++ 	ATH79_MACH_ZCN_1523H_2,		/* Zcomax ZCN-1523H-2-xx */
++ 	ATH79_MACH_ZCN_1523H_5,		/* Zcomax ZCN-1523H-5-xx */
+++	ATH79_MACH_DELIBERANT,		/* Deliberant */
++ };
++ 
++ #endif /* _ATH79_MACHTYPE_H */
++Index: linux-3.10.49/drivers/mtd/devices/m25p80.c
++===================================================================
++--- linux-3.10.49.orig/drivers/mtd/devices/m25p80.c	2015-07-12 14:32:50.141951847 +0200
+++++ linux-3.10.49/drivers/mtd/devices/m25p80.c	2015-07-12 14:56:26.341898646 +0200
++@@ -774,6 +774,7 @@
++ 	/* GigaDevice */
++ 	{ "gd25q32", INFO(0xc84016, 0, 64 * 1024,  64, SECT_4K) },
++ 	{ "gd25q64", INFO(0xc84017, 0, 64 * 1024, 128, SECT_4K) },
+++	{ "gd25q128", INFO(0xc84018, 0, 64 * 1024, 256, SECT_4K) },
++ 
++ 	/* Intel/Numonyx -- xxxs33b */
++ 	{ "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, 0) },
+Index: target/linux/ar71xx/image/Makefile
+===================================================================
+--- target/linux/ar71xx/image/Makefile.orig	2015-07-12 15:02:05.197885917 +0200
++++ target/linux/ar71xx/image/Makefile	2015-07-14 17:24:37.237389750 +0200
+@@ -290,6 +290,7 @@
+ mynet_n600_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,64k(devdata)ro,64k(devconf)ro,15872k(firmware),64k(radiocfg)ro
+ mynet_rext_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,7808k(firmware),64k(nvram)ro,64k(ART)ro,6848k@0x130000(filesystem)
+ zyx_nbg6716_mtdlayout=mtdparts=spi0.0:256k(u-boot)ro,64k(env)ro,64k(RFdata)ro,-(nbu);ar934x-nfc:2048k(zyxel_rfsd),2048k(romd),1024k(header),2048k(kernel),-(ubi)
++deliberant_mtdlayout=mtdparts=spi0.0:192k(u-boot),64k(u-boot-env),1152k(kernel),6528k(rootfs),1152k(kernel2),6528k(rootfs2),576k(data),128k(cfg),64k(art),7680k@0x40000(firmware),7680k@0x7C0000(firmware2)
+ 
+ 
+ define Image/BuildKernel
+@@ -1267,6 +1268,8 @@
+ 
+ $(eval $(call SingleProfile,ZyXEL,64k,NBG_460N_550N_550NH,nbg460n_550n_550nh,NBG460N,ttyS0,115200,NBG-460N))
+ 
++$(eval $(call SingleProfile,AthLzma,64k,DELIBERANT,deliberant,DELIBERANT,ttyS0,115200,$$(deliberant_mtdlayout),KRuImage))
++
+ $(eval $(call MultiProfile,AP121,AP121_2M AP121_4M))
+ $(eval $(call MultiProfile,AP136,AP136_010 AP136_020))
+ $(eval $(call MultiProfile,ARCHERC7, ARCHERC5 ARCHERC7V1 ARCHERC7V2))
+Index: target/linux/ar71xx/config-3.10
+===================================================================
+--- target/linux/ar71xx/config-3.10.orig	2015-07-12 18:09:54.935153114 +0200
++++ target/linux/ar71xx/config-3.10	2015-07-12 18:10:09.495152567 +0200
+@@ -128,6 +128,7 @@
+ CONFIG_ATH79_MACH_WZR_HP_G300NH2=y
+ CONFIG_ATH79_MACH_WZR_HP_G450H=y
+ CONFIG_ATH79_MACH_ZCN_1523H=y
++CONFIG_ATH79_MACH_DELIBERANT=y
+ CONFIG_ATH79_NVRAM=y
+ CONFIG_ATH79_PCI_ATH9K_FIXUP=y
+ # CONFIG_ATH79_ROUTERBOOT is not set
+Index: target/linux/ar71xx/generic/profiles/deliberant.mk
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ target/linux/ar71xx/generic/profiles/deliberant.mk	2015-07-13 11:22:29.770215613 +0200
+@@ -0,0 +1,17 @@
++#
++# Copyright (C) 2009 OpenWrt.org
++#
++# This is free software, licensed under the GNU General Public License v2.
++# See /LICENSE for more information.
++#
++
++define Profile/DELIBERANT
++	NAME:=Deliberant
++	PACKAGES:=kmod-usb-core kmod-usb2 kmod-ledtrig-usbdev
++endef
++
++define Profile/DELIBERANT/Description
++	Package set optimized for Deliberant devices.
++endef
++$(eval $(call Profile,DELIBERANT))
++
+Index: package/boot/uboot-envtools/files/ar71xx
+===================================================================
+--- package/boot/uboot-envtools/files/ar71xx.orig	2015-07-12 15:00:36.585889245 +0200
++++ package/boot/uboot-envtools/files/ar71xx	2015-07-13 14:13:29.921830182 +0200
+@@ -41,6 +41,9 @@
+ wzr-hp-ag300h)
+ 	ubootenv_add_uci_config "/dev/mtd3" "0x0" "0x10000" "0x10000"
+ 	;;
++deliberant)
++	ubootenv_add_uci_config "/dev/mtd1" "0x0" "0x10000" "0x10000"
++	;;
+ esac
+ 
+ config_load ubootenv
+Index: target/linux/ar71xx/base-files/lib/ar71xx.sh
+===================================================================
+--- target/linux/ar71xx/base-files/lib/ar71xx.sh.orig	2015-07-12 15:01:55.001886300 +0200
++++ target/linux/ar71xx/base-files/lib/ar71xx.sh	2015-07-16 13:17:25.593071923 +0200
+@@ -745,6 +745,9 @@
+ 	*"HiWiFi HC6361")
+ 		name="hiwifi-hc6361"
+ 		;;
++	"Deliberant"*)
++		name="deliberant"
++		;;
+ 	esac
+ 
+ 	case "$machine" in
+Index: target/linux/ar71xx/base-files/etc/init.d/bootok
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ target/linux/ar71xx/base-files/etc/init.d/bootok	2015-07-16 12:30:57.861176647 +0200
+@@ -0,0 +1,16 @@
++#!/bin/sh /etc/rc.common
++
++START=15
++
++. $IPKG_INSTROOT/lib/ar71xx.sh
++
++start() {
++	case $(ar71xx_board_name) in
++	deliberant)
++		# Clear linux fail counter for the active firmware image.
++		active_fw=$(fw_printenv -n active)
++		fw_setenv linux_fail${active_fw}
++		;;
++	esac
++}
++
+Index: target/linux/ar71xx/base-files/lib/upgrade/platform.sh
+===================================================================
+--- target/linux/ar71xx/base-files/lib/upgrade/platform.sh.orig	2015-07-12 15:01:55.005886299 +0200
++++ target/linux/ar71xx/base-files/lib/upgrade/platform.sh	2015-07-16 13:26:33.729051332 +0200
+@@ -206,6 +206,7 @@
+ 	nbg460n_550n_550nh | \
+ 	unifi | \
+ 	unifi-outdoor | \
++	deliberant | \
+ 	carambola2 )
+ 		[ "$magic" != "2705" ] && {
+ 			echo "Invalid image type."
+Index: target/linux/ar71xx/base-files/etc/uci-defaults/02_network
+===================================================================
+--- target/linux/ar71xx/base-files/etc/uci-defaults/02_network.orig	2015-07-12 15:01:55.097886296 +0200
++++ target/linux/ar71xx/base-files/etc/uci-defaults/02_network	2015-07-16 13:34:25.909033594 +0200
+@@ -313,6 +313,7 @@
+ tube2h |\
+ wndap360 |\
+ mynet-rext |\
++deliberant |\
+ wp543)
+ 	ucidef_set_interface_lan "eth0"
+ 	;;

@@ -6,3 +6,4 @@
 200-sx763_eeprom.patch -p0
 201-sx763_device.patch -p0
 205-l2tp-set-macaddr.patch -p0
+300-deliberant-devices.patch -p0
