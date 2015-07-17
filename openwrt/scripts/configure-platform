@@ -37,6 +37,9 @@ config_dir=${platform_dir}/configs
 config=${checkout_dir}/config.${architecture}
 $kconfig 'm+' ${config_dir}/generic ${config_dir}/${architecture} > ${config}
 
+# Configure package mirror
+echo "CONFIG_LOCALMIRROR=\"${FW_MIRROR_URL:-http://bindist.wlan-si.net/mirror/}\"" >> ${config}
+
 # Configure binary distribution repository
 fw_version=$(cat ${checkout_dir}/package/base-files/files/etc/version)
 openwrt_version=$(cat ${checkout_dir}/.label)
