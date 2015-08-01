@@ -52,7 +52,7 @@ echo "Configuring feeds..."
 echo "src-git nodewatcher https://github.com/wlanslovenija/firmware-packages-opkg.git" > ${checkout_dir}/feeds.conf
 cat ${platform_dir}/feeds/${openwrt_path_name} >> ${checkout_dir}/feeds.conf
 
-# Patch OpenWRT
+# Patch OpenWRT.
 echo "Applying patches for OpenWRT base tree..."
 cd ${checkout_dir}
 ln -s ${platform_dir}/patches/${openwrt_path_name} patches
@@ -60,6 +60,13 @@ quilt push -f -a || {
   echo "ERROR: Failed to apply patches."
   exit 1
 }
+
+# Apply any patch post-apply hooks (used to fix permissions).
+for patch in patches/*.patch; do
+  if [ -x ${patch}.postapply ]; then
+    ./${patch}.postapply
+  fi
+done
 
 # Remove certain core OpenWrt packages as our feed overrides them. If we don't remove
 # them here, they will be ignored.
