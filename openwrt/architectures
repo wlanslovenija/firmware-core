@@ -4,3 +4,5 @@ atheros
 lantiq
 x86
 x86_hyperv
+x86_kvm
+x86_xen
