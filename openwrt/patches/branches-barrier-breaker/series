@@ -1,5 +1,4 @@
 005-no_resolv_conf_auto.patch -p0
-010-imagebuilder_grub2.patch -p0
 100-regulatory_test.patch -p0
 006-tplink-writable-uboot.patch -p0
 001-fix-lantiq-vpe-undefined-ref.patch -p0
