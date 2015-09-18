@@ -25,6 +25,7 @@ kmod-ppp
 ppp
 chat
 comgt
+usb-modeswitch
 kmod-pptp
 qos-scripts
 ppp-mod-pptp
