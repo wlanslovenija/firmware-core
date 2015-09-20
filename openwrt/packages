@@ -106,3 +106,8 @@ px5g-standalone
 identity-pubkey
 sqm-scripts
 mtr
+kmod-mii
+kmod-usb-net
+kmod-usb-wdm
+kmod-usb-net-qmi-wwan
+uqmi
