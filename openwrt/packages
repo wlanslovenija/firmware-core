@@ -111,3 +111,7 @@ kmod-usb-net
 kmod-usb-wdm
 kmod-usb-net-qmi-wwan
 uqmi
+kmod-usb-ether
+kmod-usb-net-cdc-eem
+kmod-usb-net-cdc-ether
+kmod-usb-net-rndis
