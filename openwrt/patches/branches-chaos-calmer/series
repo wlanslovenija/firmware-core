@@ -3,3 +3,4 @@
 100-regulatory_test.patch -p0
 006-tplink-writable-uboot.patch -p0
 205-l2tp-set-macaddr.patch -p0
+300-tplink-wr740n-v5-backport.patch -p0
