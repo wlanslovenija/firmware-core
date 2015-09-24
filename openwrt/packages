@@ -117,3 +117,6 @@ kmod-usb-net-cdc-ether
 kmod-usb-net-cdc-ncm
 kmod-usb-net-cdc-mbim
 kmod-usb-net-rndis
+kmod-usb2
+kmod-usb-ohci
+kmod-usb-uhci
