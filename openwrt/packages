@@ -64,11 +64,17 @@ telemetryd
 wireless-info
 cronscripts
 cython
+python-construct
 python-gevent
 python-greenlet
+python-netfilter
+python-repoze-lru
+python-setuptools
+python-six
 netprofscripts
 nullhttpd
 tunneldigger
+tunneldigger-broker
 kmod-video-core
 kmod-video-uvc
 kmod-input-core
