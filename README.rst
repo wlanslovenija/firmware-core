@@ -103,6 +103,17 @@ To facilitate the cloud use of builders the following is optional, but recommend
   * ``platform`` which should be ``"openwrt"``.
   * ``architecture`` which should contain the name of the architecture the builder is for (for example ``"ar71xx"``).
   * ``version`` which should contain a string identifying the version of the builder (for example ``"git.3fb97c2"``).
+  * ``packages`` which should contain an object describing included package information. Keys should be
+    package names and each package is represented by an object with the following fields:
+    * ``name``
+    * ``version``
+    * ``dependencies``
+    * ``source``
+    * ``size``
+    * ``size_installed``
+    * ``checksum_md5``
+    * ``checksum_sha256``
+    * ``description``
 
 * Support for SSH access using the ``BUILDER_PUBLIC_KEY`` to authenticate the client connection.
 

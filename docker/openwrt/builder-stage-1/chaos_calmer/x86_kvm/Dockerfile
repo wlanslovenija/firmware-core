@@ -14,7 +14,10 @@ RUN chown builder:builder /buildsystem/build && \
  mv packages /builder/packages && \
  echo -n "{\"platform\": \"openwrt\", " > /builder/packages/metadata && \
  echo -n "\"architecture\": \"x86_kvm\", " >> /builder/packages/metadata && \
- echo "\"version\": \"${version}\"}" >> /builder/packages/metadata && \
+ echo -n "\"version\": \"${version}\", " >> /builder/packages/metadata && \
+ echo -n "\"packages\": " >> /builder/packages/metadata && \
+ find /builder/packages -name Packages | xargs cat | /buildsystem/openwrt/tools/packages2json.py >> /builder/packages/metadata && \
+ echo "}" >> /builder/packages/metadata && \
  cp /buildsystem/openwrt/docker/Dockerfile.runtime /builder/Dockerfile && \
  { rm -rf /buildsystem 2>/dev/null || true; }
 
