@@ -1,0 +1,162 @@
+Index: target/linux/ar71xx/mikrotik/target.mk
+===================================================================
+--- target/linux/ar71xx/mikrotik/target.mk.orig	2015-12-25 15:43:55.147475694 +0100
++++ target/linux/ar71xx/mikrotik/target.mk	2015-12-26 13:22:07.782690947 +0100
+@@ -1,5 +1,5 @@
+ BOARDNAME:=Mikrotik devices with NAND flash
+-FEATURES += targz
++FEATURES += targz nand
+ 
+ define Target/Description
+ 	Build firmware images for Atheros AR71xx/AR913x based Mikrotik boards.
+Index: target/linux/ar71xx/mikrotik/base-files/lib/upgrade/nand.sh
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ target/linux/ar71xx/mikrotik/base-files/lib/upgrade/nand.sh	2015-12-26 12:30:24.234562839 +0100
+@@ -0,0 +1,71 @@
++#!/bin/sh
++
++. /lib/functions.sh
++
++mikrotik_nand_do_upgrade_stage2() {
++	local mtd_kernel="$(find_mtd_part 'kernel')"
++	local mtd_rootfs="$(find_mtd_part 'rootfs')"
++	local mnt_kernel=/mnt/mnt
++	local mnt_rootfs=/mnt
++
++	echo "Erasing filesystem..."
++	mtd erase kernel 2>/dev/null >/dev/null
++	mtd erase rootfs 2>/dev/null >/dev/null
++
++	mount -t yaffs2 "$mtd_rootfs" "$mnt_rootfs"
++
++	echo "Preparing filesystem..."
++	( cd /mnt; tar xpz -f "$1" )
++
++	mount -t yaffs2 "$mtd_kernel" "$mnt_kernel"
++
++	echo "Copying kernel..."
++	cp $mnt_rootfs/kernel $mnt_kernel/kernel
++
++	echo "Copying old configuration..."
++	cp /tmp/sysupgrade.tgz /mnt/
++
++	# make sure everything is written before we unmount the partitions
++	echo "chmod ugo+x /" > /mnt/etc/uci-defaults/set_root_permission
++	sync
++	ls $mnt_kernel >/dev/null
++	ls $mnt_rootfs >/dev/null
++
++	echo "Unmounting partitions..."
++	umount $mnt_kernel
++	umount $mnt_rootfs
++
++	sleep 3
++	echo b > /proc/sysrq-trigger
++}
++
++# Hook called by "sysupgrade nand".
++nand_upgrade_stage2() {
++	touch /tmp/sysupgrade
++
++	killall -9 telnetd
++	killall -9 dropbear
++	killall -9 ash
++
++	kill_remaining TERM
++	sleep 3
++	kill_remaining KILL
++
++	sleep 1
++
++	run_ramfs ". /lib/functions.sh; include /lib/upgrade; mikrotik_nand_do_upgrade_stage2 $2"
++}
++
++mikrotik_nand_upgrade_stage1() {
++	path="$ARGV"
++
++	# Make sure CONF_TAR doesn't exist if the user doesn't want to save configuration.
++	[ "$SAVE_CONFIG" != 1 -a -f "$CONF_TAR" ] &&
++		rm $CONF_TAR
++
++	ubus call system nandupgrade "{\"path\": \"$path\" }"
++	exit 0
++}
++
++append sysupgrade_pre_upgrade mikrotik_nand_upgrade_stage1
++
+Index: scripts/make-mikrotik-sysupgrade.sh
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ scripts/make-mikrotik-sysupgrade.sh	2015-12-27 09:34:55.985694674 +0100
+@@ -0,0 +1,22 @@
++#!/bin/sh
++
++ROOTFS_TARGZ="$1"
++KERNEL_ELF="$2"
++
++SYSUPGRADE_TARGZ=$(echo "$ROOTFS_TARGZ" | sed s#rootfs#sysupgrade#)
++SYSUPGRADE_TAR=$(echo "$SYSUPGRADE_TARGZ" | sed s#.gz##)
++
++[ -f "$ROOTFS_TARGZ" -a -f "$KERNEL_ELF" ] || {
++	echo "Usage: $0 <rootfs_targz> <kernel_elf>"
++	exit 1
++}
++
++cp "$ROOTFS_TARGZ" "$SYSUPGRADE_TARGZ"
++cp "$KERNEL_ELF" kernel
++
++gunzip "$SYSUPGRADE_TARGZ"
++tar rf "$SYSUPGRADE_TAR" --numeric-owner --owner=0 --group=0 ./kernel
++gzip "$SYSUPGRADE_TAR"
++
++rm kernel
++
+Index: target/linux/ar71xx/base-files/lib/upgrade/platform.sh
+===================================================================
+--- target/linux/ar71xx/base-files/lib/upgrade/platform.sh.orig	2015-12-25 15:43:55.151475694 +0100
++++ target/linux/ar71xx/base-files/lib/upgrade/platform.sh	2015-12-26 12:40:09.290586989 +0100
+@@ -454,6 +454,22 @@
+ 		}
+ 		return 0
+ 		;;
++	rb-2011* | \
++	rb-750* | \
++	rb-4*)
++		local orig_magic="$(eval cat "$1" 2>/dev/null | dd bs=2 count=1 2>/dev/null | hexdump -n 2 -e '1/1 "%02x"')"
++
++		[ "$orig_magic" != "1f8b" ] && {
++			echo "Invalid image. Use .tar.gz files on this board."
++			return 1
++		}
++
++		tar tzf "$1" | grep -e '\./kernel$' >/dev/null || {
++			echo "Invalid image: Tarball should contain a file called 'kernel' in the root directory."
++			return 1
++		}
++		return 0
++		;;
+ 
+ 	esac
+ 
+Index: target/linux/ar71xx/image/Makefile
+===================================================================
+--- target/linux/ar71xx/image/Makefile.orig	2015-12-27 09:54:36.981743424 +0100
++++ target/linux/ar71xx/image/Makefile	2015-12-27 17:35:25.446884697 +0100
+@@ -2105,6 +2105,16 @@
+ $(eval $(call MultiProfile,WNDR4300,WNDR3700V4 WNDR4300V1))
+ endif # ifeq ($(SUBTARGET),nand)
+ 
++ifeq ($(SUBTARGET),mikrotik)
++ifneq ($(CONFIG_TARGET_ROOTFS_TARGZ),)
++define Build/mkfs/targz
++	sh $(TOPDIR)/scripts/make-mikrotik-sysupgrade.sh \
++		$(BIN_DIR)/$(IMG_PREFIX)-DefaultNoWifi-rootfs.tar.gz \
++		$(BIN_DIR)/$(IMG_PREFIX)-vmlinux-lzma.elf
++endef
++endif
++endif
++
+ 
+ $(eval $(call MultiProfile,Default,$(SINGLE_PROFILES)))
+ 

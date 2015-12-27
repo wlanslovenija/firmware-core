@@ -5,3 +5,4 @@
 205-l2tp-set-macaddr.patch -p0
 300-tplink-wr740n-v5-backport.patch -p0
 300-mikrotik-rb2011-switch-fix.patch -p0
+300-mikrotik-sysupgrade-support.patch -p0
