@@ -1,19 +1,19 @@
 Index: target/linux/ar71xx/mikrotik/target.mk
 ===================================================================
 --- target/linux/ar71xx/mikrotik/target.mk.orig	2015-12-25 15:43:55.147475694 +0100
-+++ target/linux/ar71xx/mikrotik/target.mk	2015-12-26 13:22:07.782690947 +0100
++++ target/linux/ar71xx/mikrotik/target.mk	2015-12-28 15:01:53.578070870 +0100
 @@ -1,5 +1,5 @@
  BOARDNAME:=Mikrotik devices with NAND flash
 -FEATURES += targz
-+FEATURES += targz nand
++FEATURES += targz ramdisk nand
  
  define Target/Description
  	Build firmware images for Atheros AR71xx/AR913x based Mikrotik boards.
 Index: target/linux/ar71xx/mikrotik/base-files/lib/upgrade/nand.sh
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ target/linux/ar71xx/mikrotik/base-files/lib/upgrade/nand.sh	2015-12-26 12:30:24.234562839 +0100
-@@ -0,0 +1,71 @@
++++ target/linux/ar71xx/mikrotik/base-files/lib/upgrade/nand.sh	2015-12-29 12:54:15.900250186 +0100
+@@ -0,0 +1,75 @@
 +#!/bin/sh
 +
 +. /lib/functions.sh
@@ -37,6 +37,7 @@ Index: target/linux/ar71xx/mikrotik/base-files/lib/upgrade/nand.sh
 +
 +	echo "Copying kernel..."
 +	cp $mnt_rootfs/kernel $mnt_kernel/kernel
++	rm $mnt_rootfs/kernel
 +
 +	echo "Copying old configuration..."
 +	cp /tmp/sysupgrade.tgz /mnt/
@@ -73,11 +74,14 @@ Index: target/linux/ar71xx/mikrotik/base-files/lib/upgrade/nand.sh
 +}
 +
 +mikrotik_nand_upgrade_stage1() {
-+	path="$ARGV"
++	path="$(pwd)/$ARGV"
 +
 +	# Make sure CONF_TAR doesn't exist if the user doesn't want to save configuration.
 +	[ "$SAVE_CONFIG" != 1 -a -f "$CONF_TAR" ] &&
 +		rm $CONF_TAR
++
++	# Copy sysupgrade to /tmp so procd can start it.
++	cp /sbin/upgraded /tmp/
 +
 +	ubus call system nandupgrade "{\"path\": \"$path\" }"
 +	exit 0
