@@ -4,12 +4,35 @@ work_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )
 platform_dir="${work_dir}/openwrt"
 version=$(git describe --always)
 
+branches="$(cat ${platform_dir}/branches)"
+architectures="$(cat ${platform_dir}/architectures)"
+
+while [ -n "$1" ]; do
+  case "$1" in
+    -b) branches="$2"; shift ;;
+    -a) architectures="$2"; shift ;;
+    -*)
+      echo "Invalid option: $1"
+      exit 1
+      ;;
+    *)
+      break
+      ;;
+  esac
+  shift;
+done
+
 echo "Creating runtime Docker containers..."
-for branch in $(cat ${platform_dir}/branches); do
+echo -n "Branches: "
+echo $branches
+echo -n "Architectures: "
+echo $architectures
+
+for branch in ${branches}; do
   short_branch=$(echo $branch | cut -d ':' -f 4)
   branch=$(echo $branch | cut -d ':' -f 1)
 
-  for architecture in $(cat ${platform_dir}/architectures); do
+  for architecture in ${architectures}; do
     image_name="wlanslovenija/openwrt-builder:v${version}_${short_branch}_${architecture}"
 
     echo -n "  - Building image ${image_name}... "
@@ -19,7 +42,7 @@ for branch in $(cat ${platform_dir}/branches); do
     if [ "$?" == "0" ]; then
       echo "ok"
 
-      echo -n "  - Pusing image ${image_name}... "
+      echo -n "  - Pushing image ${image_name}... "
       docker push ${image_name} >/dev/null 2>/dev/null
       if [ "$?" == "0" ]; then
         echo "ok"
