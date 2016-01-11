@@ -1,4 +1,4 @@
-FROM wlanslovenija/base
+FROM tozd/base
 
 MAINTAINER Jernej Kos <jernej@kos.mx>
 
