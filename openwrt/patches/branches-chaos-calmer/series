@@ -6,3 +6,6 @@
 300-tplink-wr740n-v5-backport.patch -p0
 300-mikrotik-rb2011-switch-fix.patch -p0
 300-mikrotik-sysupgrade-support.patch -p0
+400-fix-adm6996-init.patch -p0
+400-sx763_device.patch -p0
+400-sx763_eeprom.patch -p0
