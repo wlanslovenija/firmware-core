@@ -111,3 +111,4 @@ kmod-usb2
 kmod-usb-ohci
 kmod-usb-uhci
 mjpg-streamer
+wpad
