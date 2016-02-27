@@ -7,3 +7,4 @@ x86_hyperv
 x86_kvm
 x86_xen
 brcm2708
+ramips_rt305x
