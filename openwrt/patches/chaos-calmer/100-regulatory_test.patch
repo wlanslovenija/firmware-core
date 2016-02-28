@@ -1,17 +1,17 @@
 Index: package/kernel/mac80211/files/regdb.txt
 ===================================================================
---- package/kernel/mac80211/files/regdb.txt.orig	2015-09-04 09:57:35.654866806 +0200
-+++ package/kernel/mac80211/files/regdb.txt	2015-09-04 09:58:47.058863780 +0200
+--- package/kernel/mac80211/files/regdb.txt.orig	2016-02-28 13:31:23.305301205 +0100
++++ package/kernel/mac80211/files/regdb.txt	2016-02-28 13:33:50.621294862 +0100
 @@ -1,18 +1,7 @@
  # This is the world regulatory domain
  country 00:
 -	(2402 - 2472 @ 40), (20)
 -	# Channel 12 - 13.
--	(2457 - 2482 @ 40), (20), NO-IR
+-	(2457 - 2482 @ 20), (20), NO-IR, AUTO-BW
 -	# Channel 14. Only JP enables this and for 802.11b only
 -	(2474 - 2494 @ 20), (20), NO-IR, NO-OFDM
 -	# Channel 36 - 48
--	(5170 - 5250 @ 80), (20)
+-	(5170 - 5250 @ 80), (20), AUTO-BW
 -	# Channel 52 - 64
 -	(5250 - 5330 @ 80), (20), NO-IR, DFS, AUTO-BW
 -	# Channel 100 - 144
@@ -23,22 +23,22 @@ Index: package/kernel/mac80211/files/regdb.txt
  	# IEEE 802.11ad (60GHz), channels 1..3
  	(57240 - 63720 @ 2160), (0)
  
-@@ -497,11 +486,9 @@
+@@ -504,11 +493,9 @@
  	(5490 - 5730 @ 160), (24), DFS
  	(5735 - 5835 @ 80), (30)
  
 -country HR: DFS-ETSI
--	(2402 - 2482 @ 40), (20)
--	(5170 - 5250 @ 80), (20), AUTO-BW
--	(5250 - 5330 @ 80), (20), DFS, AUTO-BW
--	(5490 - 5710 @ 160), (27), DFS
+-	(2400 - 2483.5 @ 40), (20)
+-	(5150 - 5250 @ 80), (23), NO-OUTDOOR, AUTO-BW
+-	(5250 - 5350 @ 80), (20), NO-OUTDOOR, DFS, AUTO-BW
+-	(5470 - 5725 @ 160), (27), DFS
 +country HR:
 +	(2400 - 2483 @ 40), (30)
 +	(5140 - 5860 @ 40), (30)
- 	# 60 gHz band channels 1-4, ref: Etsi En 302 567
+ 	# 60 GHz band channels 1-4, ref: Etsi En 302 567
  	(57000 - 66000 @ 2160), (40)
  
-@@ -1004,11 +991,9 @@
+@@ -1031,11 +1018,9 @@
  	(5490 - 5730 @ 160), (24), DFS
  	(5735 - 5835 @ 80), (30)
  
@@ -50,28 +50,13 @@ Index: package/kernel/mac80211/files/regdb.txt
 +country SI:
 +	(2400 - 2483 @ 40), (30)
 +	(5140 - 5860 @ 40), (30)
- 	# 60 gHz band channels 1-4, ref: Etsi En 302 567
+ 	# 60 GHz band channels 1-4, ref: Etsi En 302 567
  	(57000 - 66000 @ 2160), (40)
  
-@@ -1121,11 +1106,9 @@
- 	(5490 - 5730 @ 160), (24), DFS
- 	(5735 - 5835 @ 80), (30)
- 
--country US: DFS-FCC
--	(2402 - 2472 @ 40), (30)
--	(5170 - 5250 @ 80), (17), AUTO-BW
--	(5250 - 5330 @ 80), (23), DFS, AUTO-BW
--	(5735 - 5835 @ 80), (30)
-+country US:
-+	(2400 - 2483 @ 40), (30)
-+	(5140 - 5860 @ 40), (30)
- 	# 60g band
- 	# reference: http://cfr.regstoday.com/47cfr15.aspx#47_CFR_15p255
- 	# channels 1,2,3, EIRP=40dBm(43dBm peak)
 Index: package/kernel/mac80211/patches/900-regulatory-test.patch
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ package/kernel/mac80211/patches/900-regulatory-test.patch	2015-09-04 09:57:35.654866806 +0200
++++ package/kernel/mac80211/patches/900-regulatory-test.patch	2016-02-28 13:31:23.301301205 +0100
 @@ -0,0 +1,68 @@
 +--- a/drivers/net/wireless/ath/regd.c	2014-06-07 12:11:24.167784903 +0200
 ++++ b/drivers/net/wireless/ath/regd.c	2014-06-07 12:14:49.003777068 +0200

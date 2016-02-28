@@ -1,9 +1,0 @@
-005-no_resolv_conf_auto.patch -p0
-100-regulatory_test.patch -p0
-006-tplink-writable-uboot.patch -p0
-001-fix-lantiq-vpe-undefined-ref.patch -p0
-200-sx763_eeprom.patch -p0
-201-sx763_device.patch -p0
-205-l2tp-set-macaddr.patch -p0
-300-deliberant-devices.patch -p0
-300-mikrotik-rb2011-switch-fix.patch -p0

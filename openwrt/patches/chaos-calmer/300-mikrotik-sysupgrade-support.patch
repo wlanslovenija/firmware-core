@@ -1,7 +1,7 @@
 Index: target/linux/ar71xx/mikrotik/target.mk
 ===================================================================
---- target/linux/ar71xx/mikrotik/target.mk.orig	2015-12-25 15:43:55.147475694 +0100
-+++ target/linux/ar71xx/mikrotik/target.mk	2015-12-28 15:01:53.578070870 +0100
+--- target/linux/ar71xx/mikrotik/target.mk.orig	2016-02-28 13:34:20.841293560 +0100
++++ target/linux/ar71xx/mikrotik/target.mk	2016-02-28 13:34:20.833293561 +0100
 @@ -1,5 +1,5 @@
  BOARDNAME:=Mikrotik devices with NAND flash
 -FEATURES += targz
@@ -12,7 +12,7 @@ Index: target/linux/ar71xx/mikrotik/target.mk
 Index: target/linux/ar71xx/mikrotik/base-files/lib/upgrade/nand.sh
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ target/linux/ar71xx/mikrotik/base-files/lib/upgrade/nand.sh	2015-12-29 12:54:15.900250186 +0100
++++ target/linux/ar71xx/mikrotik/base-files/lib/upgrade/nand.sh	2016-02-28 13:34:20.833293561 +0100
 @@ -0,0 +1,75 @@
 +#!/bin/sh
 +
@@ -92,7 +92,7 @@ Index: target/linux/ar71xx/mikrotik/base-files/lib/upgrade/nand.sh
 Index: scripts/make-mikrotik-sysupgrade.sh
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ scripts/make-mikrotik-sysupgrade.sh	2015-12-27 09:34:55.985694674 +0100
++++ scripts/make-mikrotik-sysupgrade.sh	2016-02-28 13:34:20.833293561 +0100
 @@ -0,0 +1,22 @@
 +#!/bin/sh
 +
@@ -118,11 +118,11 @@ Index: scripts/make-mikrotik-sysupgrade.sh
 +
 Index: target/linux/ar71xx/base-files/lib/upgrade/platform.sh
 ===================================================================
---- target/linux/ar71xx/base-files/lib/upgrade/platform.sh.orig	2015-12-25 15:43:55.151475694 +0100
-+++ target/linux/ar71xx/base-files/lib/upgrade/platform.sh	2015-12-26 12:40:09.290586989 +0100
-@@ -454,6 +454,22 @@
- 		}
- 		return 0
+--- target/linux/ar71xx/base-files/lib/upgrade/platform.sh.orig	2016-02-28 13:34:20.841293560 +0100
++++ target/linux/ar71xx/base-files/lib/upgrade/platform.sh	2016-02-28 13:34:20.837293560 +0100
+@@ -389,6 +389,22 @@
+ 		alfa_check_image "$1" && return 0
+ 		return 1
  		;;
 +	rb-2011* | \
 +	rb-750* | \
@@ -141,12 +141,12 @@ Index: target/linux/ar71xx/base-files/lib/upgrade/platform.sh
 +		return 0
 +		;;
  
- 	esac
- 
+ 	unifi-outdoor-plus | \
+ 	uap-pro)
 Index: target/linux/ar71xx/image/Makefile
 ===================================================================
---- target/linux/ar71xx/image/Makefile.orig	2015-12-27 09:54:36.981743424 +0100
-+++ target/linux/ar71xx/image/Makefile	2015-12-27 17:35:25.446884697 +0100
+--- target/linux/ar71xx/image/Makefile.orig	2016-02-28 13:34:20.841293560 +0100
++++ target/linux/ar71xx/image/Makefile	2016-02-28 13:34:20.837293560 +0100
 @@ -2105,6 +2105,16 @@
  $(eval $(call MultiProfile,WNDR4300,WNDR3700V4 WNDR4300V1))
  endif # ifeq ($(SUBTARGET),nand)

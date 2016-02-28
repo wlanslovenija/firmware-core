@@ -14,7 +14,7 @@ if [[ -z "${openwrt_label}" || -z "${openwrt_path}" || -z "${openwrt_rev}" ]]; t
 fi
 
 # Check if all utilities that we need are ready for use
-for program in quilt svn
+for program in quilt svn git
 do
   p=$(which $program)
   if [ "$p" == "" ]; then
@@ -35,7 +35,7 @@ mkdir -p ${build_dir}
 firmware_version=$(git describe --always)
 
 # Now that we have everything verified, first checkout the OpenWRT repository
-openwrt_path_name="${openwrt_path//\//-}"
+openwrt_path_name="${openwrt_label//\//-}"
 openwrt_path_name="${openwrt_path_name//_/-}"
 
 echo "OpenWRT path: ${openwrt_path}"
@@ -43,7 +43,9 @@ echo "OpenWRT revision: ${openwrt_rev}"
 echo "Checking out OpenWRT, this could take some time..."
 
 rm -rf ${checkout_dir}
-svn co -q -r ${openwrt_rev} svn://svn.openwrt.org/openwrt/${openwrt_path} ${checkout_dir}
+git clone git://git.openwrt.org/${openwrt_path} ${checkout_dir} || exit 1
+cd ${checkout_dir}
+git checkout ${openwrt_rev} || exit 1
 
 echo ${openwrt_label} > ${checkout_dir}/.label
 

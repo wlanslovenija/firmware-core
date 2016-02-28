@@ -1,5 +1,0 @@
-#!/bin/bash
-
-echo "Fixing permissions for deliberant bootok script..."
-chmod +x target/linux/ar71xx/base-files/etc/init.d/bootok
-
