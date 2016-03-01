@@ -1,2 +1,2 @@
-CONFIG_TARGET_rampis=y
+CONFIG_TARGET_ramips=y
 CONFIG_TARGET_ramips_rt305x=y
