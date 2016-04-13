@@ -19,11 +19,11 @@ Pre-built images are available on the public Docker Hub:
 Running Builders
 ----------------
 
-In order to run the Dockerized builder, for example ``wlanslovenija/openwrt-builder:v3fb97c2_bb_ar71xx``,
+In order to run the Dockerized builder, for example ``wlanslovenija/openwrt-builder:vb106cfb_cc_ar71xx``,
 one simply needs to do the following::
 
   $ docker run -e "BUILDER_PUBLIC_KEY=ssh-rsa AAAA...2n builder@host" \
-     wlanslovenija/openwrt-builder:v3fb97c2_bb_ar71xx
+     wlanslovenija/openwrt-builder:vb106cfb_cc_ar71xx
 
 The ``BUILDER_PUBLIC_KEY`` environmental variable is used to specify the public key that will be
 accepted for SSH authentication. In case one uses nodewatcher_, the corresponding private key needs
@@ -38,7 +38,7 @@ You san SSH into the builder using the private keys which corresponds to the ``B
 
 Alternativelly, you can use Docker to connect to the running builder container locally::
 
-    docker exec -t -i builder-openwrt-v3fb97c2-bb-ar71xx bash
+    docker exec -t -i builder-openwrt-vb106cfb_cc_ar71xx bash
 
 Once you are in, you can build the image you are interested in. For example::
 
