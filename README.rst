@@ -105,6 +105,7 @@ To facilitate the cloud use of builders the following is optional, but recommend
   * ``version`` which should contain a string identifying the version of the builder (for example ``"git.3fb97c2"``).
   * ``packages`` which should contain an object describing included package information. Keys should be
     package names and each package is represented by an object with the following fields:
+
     * ``name``
     * ``version``
     * ``dependencies``
