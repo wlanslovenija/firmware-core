@@ -78,11 +78,11 @@ Index: target/linux/x86/Makefile
 @@ -11,7 +11,7 @@
  BOARDNAME:=x86
  FEATURES:=squashfs ext4 vdi vmdk pcmcia targz
--SUBTARGETS=generic xen_domu ep80579 geode kvm_guest rdc 64
-+SUBTARGETS=generic xen_domu ep80579 geode kvm_guest rdc 64 hv_guest
+-SUBTARGETS=generic xen_domu ep80579 geode kvm_guest 64
++SUBTARGETS=generic xen_domu ep80579 geode kvm_guest 64 hv_guest
  MAINTAINER:=Felix Fietkau <nbd@openwrt.org>
  
- KERNEL_PATCHVER:=3.18
+ DEFAULT_PACKAGES += partx-utils
  
 Index: target/linux/x86/hv_guest/target.mk
 ===================================================================
