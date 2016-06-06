@@ -156,6 +156,16 @@ overwrite anything in this directory, so it shouldn't be edited by hand.
   contains the OpenWrt image builder that can be used to quickly generate firmware images without needing
   to compile anything.
 
+Updating the OpenWRT Build System
+---------------------------------
+
+When you modify the list of supported branches (``openwrt/branches``) or architectures (``openwrt/architectures``),
+you need to update all the affected Dockerfiles. In order to do this, you just need to run the following script::
+
+    openwrt/scripts/generate-dockerfiles
+
+You then need to commit the updated files under ``docker/`` to the repository together with your other changes.
+
 Source Code, Issue Tracker and Mailing List
 -------------------------------------------
 
