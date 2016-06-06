@@ -1,0 +1,2 @@
+src-git openwrt https://github.com/openwrt/packages.git
+src-git routing git://github.com/wlanslovenija/openwrt-routing-packages.git
