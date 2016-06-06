@@ -35,8 +35,7 @@ mkdir -p ${build_dir}
 firmware_version=$(git describe --always)
 
 # Now that we have everything verified, first checkout the OpenWRT repository
-openwrt_path_name="${openwrt_label//\//-}"
-openwrt_path_name="${openwrt_path_name//_/-}"
+openwrt_path_name="${openwrt_label//\//_}"
 
 echo "OpenWRT path: ${openwrt_path}"
 echo "OpenWRT revision: ${openwrt_rev}"
