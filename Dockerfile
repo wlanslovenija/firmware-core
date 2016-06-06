@@ -1,7 +1,5 @@
 FROM tozd/base
 
-MAINTAINER Jernej Kos <jernej@kos.mx>
-
 ENV FW_PACKAGE_HOST packages.wlan-si.net
 
 RUN apt-get -q -q update && \

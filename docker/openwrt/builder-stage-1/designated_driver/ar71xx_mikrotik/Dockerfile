@@ -1,7 +1,9 @@
 
-FROM wlanslovenija/openwrt-buildsystem:designated_driver
+########################################################################
+# WARNING: This is an automatically generated Dockerfile. DO NOT EDIT. #
+########################################################################
 
-MAINTAINER Jernej Kos <jernej@kos.mx>
+FROM wlanslovenija/openwrt-buildsystem:designated_driver
 
 RUN chown builder:builder /buildsystem/build && \
  sudo -E -u builder ./openwrt/scripts/configure-platform ar71xx_mikrotik && \

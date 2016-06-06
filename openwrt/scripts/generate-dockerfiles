@@ -1,9 +1,11 @@
 #!/bin/bash
 
 template_buildsystem="
-FROM wlanslovenija/firmware-base
+########################################################################
+# WARNING: This is an automatically generated Dockerfile. DO NOT EDIT. #
+########################################################################
 
-MAINTAINER Jernej Kos <jernej@kos.mx>
+FROM wlanslovenija/firmware-base
 
 RUN ./openwrt/scripts/prepare \${branch} \${path} \${rev} && \\\\
  rm -rf .git && \\\\
@@ -11,9 +13,11 @@ RUN ./openwrt/scripts/prepare \${branch} \${path} \${rev} && \\\\
 "
 
 template_stage1="
-FROM wlanslovenija/openwrt-buildsystem:\${branch}
+########################################################################
+# WARNING: This is an automatically generated Dockerfile. DO NOT EDIT. #
+########################################################################
 
-MAINTAINER Jernej Kos <jernej@kos.mx>
+FROM wlanslovenija/openwrt-buildsystem:\${branch}
 
 RUN chown builder:builder /buildsystem/build && \\\\
  sudo -E -u builder ./openwrt/scripts/configure-platform \${architecture} && \\\\
