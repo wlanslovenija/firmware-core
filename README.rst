@@ -66,8 +66,8 @@ If you need additional packages, you have to `modify the firmware builders`_.
 
 Resulting image will be in ``/builder/imagebuilder/bin/ar71xx/``.
 
-.. _modify the firmware builders: Modifying Firmware Builders_
-.. _cannot compile custom packages at this step anymore: Build System Internals_
+.. _modify the firmware builders: modifying-firmware-builders_
+.. _cannot compile custom packages at this step anymore: build-system-internals_
 
 Accessing Built Images
 ----------------------
@@ -101,6 +101,8 @@ Of course probably you want to use some reverse HTTP proxy in front and make the
     src/gz barrier_breaker_routing http://example.com/firmware/git.3fb97c2/openwrt/barrier_breaker/ar71xx/routing
 
 This is also how nodewatcher does it. See that builder's git revision, OpenWrt release, and platform are parts of the URL.
+
+.. _modifying-firmware-builders:
 
 Modifying Firmware Builders
 ---------------------------
@@ -136,6 +138,8 @@ To facilitate the cloud use of builders the following is optional, but recommend
     * ``description``
 
 * Support for SSH access using the ``BUILDER_PUBLIC_KEY`` to authenticate the client connection.
+
+.. _build-system-internals:
 
 Build System Internals
 ----------------------
