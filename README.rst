@@ -31,6 +31,11 @@ to be configured in its builder configuration.
 
 .. _nodewatcher: http://nodewatcher.net
 
+.. note::
+    When nodewatcher is generating firmware images, it specifies the profile, packages, and configuration
+    files automatically. The commands described below are used only when developing, testing, or using
+    firmware builders without nodewatcher.
+
 Building Images
 ---------------
 
