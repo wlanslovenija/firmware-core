@@ -214,7 +214,7 @@ You can now run and use the new image in the same way as pre-built images. You c
 nodewatcher.
 If you are adding support for a new device, you have add to nodewatcher also a new `device descriptor`_.
 Add it to your local instance of nodewatcher and test it by generating an image through nodewatcher for this new device,
-flashing it, and testing it, to make sure everything works as intendent.
+flashing it, and testing it, to make sure everything works as intended.
 If it does, then contribute both changes to this repository and your new device descriptor back so that it is
 available to others as well.
 
