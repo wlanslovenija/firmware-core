@@ -73,7 +73,7 @@ Resulting image will be in ``/builder/imagebuilder/bin/ar71xx/``.
 Accessing Built Images
 ----------------------
 
-You can use ``scp`` to copy the image out. Alternativelly, you can use Docker::
+You can use ``scp`` to copy the image out. Alternatively, you can use Docker::
 
     docker cp builder-openwrt-v3fb97c2-bb-ar71xx:/builder/imagebuilder/bin/ar71xx/openwrt-ar71xx-generic-tl-wr1043nd-v1-squashfs-factory.bin .
 
