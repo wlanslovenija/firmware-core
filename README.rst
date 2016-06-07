@@ -108,6 +108,75 @@ This is also how nodewatcher does it. See that builder's git revision, OpenWrt r
 Modifying Firmware Builders
 ---------------------------
 
+If you want to modify firmware builders to generate somehow different OpenWrt firmware, you should first make sure
+that firmware image works for you when it is generated directly through `normal OpenWrt firmware building process`_.
+Firmware builders are not suitable environment for development of OpenWrt firmware itself.
+Once you have a working firmware image you want you can proceed with modifying firmware builders to build
+this new firmware for you.
+Instead of using pre-built Docker images from Docker Hub you will now have to build Docker images for
+new firmware builders yourself.
+
+.. _normal OpenWrt firmware building process: https://wiki.openwrt.org/doc/howto/build
+
+OpenWRt firmware builders are defined through configuration files found under ``openwrt`` directory:
+
+* ``branches`` contains a list of OpenWrt git branches and their commit hashes that should be compiled.
+
+  Each branch definition is in the format ``LONG_NAME:GIT_PATH:GIT_REVISION:SHORT_NAME`` where fields are as follows:
+
+  * ``LONG_NAME`` is a lowercased OpenWrt distribution name (eg. ``chaos_calmer``).
+
+  * ``GIT_PATH`` is a path relative to `git.openwrt.org`_ (eg. ``15.05/openwrt.git``).
+
+  * ``GIT_REVISION`` is a commit hash or branch name.
+
+  * ``SHORT_NAME`` is a two-letter lowercased OpenWrt short distribution name (eg. ``cc``).
+
+  If you need to support a new version of OpenWrt (new branch) or bump the revision of an existing branch, you must
+  first edit this file.
+
+* ``architectures`` contains a list of OpenWrt architectures that should be built. Each architecture listed here is
+  configured inside ``configs/<architecture>``.
+
+* ``configs`` contains an OpenWrt configuration (``.config``) for each of the architectures. These ``.config`` files
+  are the usual format for configuring the Linux kernel.
+
+  There is a special configuration called ``generic``, which is merged into configurations of all other architectures
+  before building. Configuration for each architecture should contain the minimum amount of options needed to
+  successfully build OpenWrt. All options, which are not specified, will be automatically set to default values and
+  in this case you should not specify them.
+
+  Also, be sure to specify only architecture-specific configuration in these files. All general configuration, which
+  should be applied to all architectures, should go into the generic file.
+
+* ``feeds`` contains a list of OpenWrt package feeds for each of the branches.
+
+  Each branch has its own file named ``LONG_NAME`` (eg. ``feeds/chaos_calmer``).
+
+  The format of each file is the same as ``feeds.conf`` in OpenWrt.
+
+* ``patches`` contains patches that should be applied to the OpenWrt tree before building.
+
+  Each branch has its own directory named ``LONG_NAME`` (eg. ``patches/chaos_calmer/``).
+
+  The directory contains patch files and a series file, as required by `quilt`_.
+
+* ``packages`` contains a list of packages that should be built.
+
+  The list may contain any package included in the base distribution and may also contain any packages contained in configured feeds.
+
+  The list of packages is currently the same for all branches and architectures. If you need architecture-specific packages, those
+  should be specified in the architecture configuration file.
+
+After you make any changes to the above configuration, you must first run ``./openwrt/scripts/generate-dockerfiles`` to
+update the Dockerfiles, which are used to build the firmware.
+You should commit those updated files under ``docker`` directory to the repository together with your other changes.
+
+Relationships of the various Dockerfiles are explained in build-system-internals_.
+
+.. _git.openwrt.org: https://git.openwrt.org/
+.. _quilt: https://savannah.nongnu.org/projects/quilt
+
 OpenWrt Cloud Builder API
 -------------------------
 
@@ -179,16 +248,6 @@ overwrite anything in this directory, so it shouldn't be edited by hand.
   combination of firmware version, OpenWrt branch and architecture that we support. This Docker image
   contains the OpenWrt image builder that can be used to quickly generate firmware images without needing
   to compile anything.
-
-Updating the OpenWRT Build System
----------------------------------
-
-When you modify the list of supported branches (``openwrt/branches``) or architectures (``openwrt/architectures``),
-you need to update all the affected Dockerfiles. In order to do this, you just need to run the following script::
-
-    openwrt/scripts/generate-dockerfiles
-
-You then need to commit the updated files under ``docker/`` to the repository together with your other changes.
 
 Source Code, Issue Tracker and Mailing List
 -------------------------------------------
