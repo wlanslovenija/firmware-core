@@ -16,6 +16,11 @@ Pre-built images are available on the public Docker Hub:
 .. _wlanslovenija/openwrt-buildsystem: https://registry.hub.docker.com/u/wlanslovenija/openwrt-buildsystem/
 .. _wlanslovenija/openwrt-builder: https://registry.hub.docker.com/u/wlanslovenija/openwrt-builder/
 
+.. note::
+    When nodewatcher_ is generating firmware images, it specifies the profile, packages, and configuration
+    files automatically. The commands described below are used only when developing, testing, or using
+    firmware builders without nodewatcher.
+
 Running Builders
 ----------------
 
@@ -30,11 +35,6 @@ accepted for SSH authentication. In case one uses nodewatcher_, the correspondin
 to be configured in its builder configuration.
 
 .. _nodewatcher: http://nodewatcher.net
-
-.. note::
-    When nodewatcher is generating firmware images, it specifies the profile, packages, and configuration
-    files automatically. The commands described below are used only when developing, testing, or using
-    firmware builders without nodewatcher.
 
 Building Images
 ---------------
