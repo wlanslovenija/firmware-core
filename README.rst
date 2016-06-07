@@ -172,7 +172,7 @@ After you make any changes to the above configuration, you must first run ``./op
 update the Dockerfiles, which are used to build the firmware.
 You should commit those updated files under ``docker`` directory to the repository together with your other changes.
 
-Relationships of the various Dockerfiles are explained in build-system-internals_.
+Relationships of the various Dockerfiles are explained in `Build System Internals`_.
 
 .. _git.openwrt.org: https://git.openwrt.org/
 .. _quilt: https://savannah.nongnu.org/projects/quilt
