@@ -61,10 +61,13 @@ Once you are in, you can build the image you are interested in. For example::
     make image PROFILE="TLWR1043" PACKAGES="wireless-tools wpad-mini kmod-netem kmod-pktgen ntpclient qos-scripts iperf horst wireless-info cronscripts iwinfo nodewatcher-agent nodewatcher-agent-mod-general nodewatcher-agent-mod-resources nodewatcher-agent-mod-interfaces nodewatcher-agent-mod-wireless nodewatcher-agent-mod-keys_ssh nodewatcher-agent-mod-clients uhttpd ip-full"
 
 You can use only packages which were made when creating this builder (are listed in the ``openwrt/packages`` file).
-You :ref:`cannot compile custom packages at this step anymore <build-system-internals>`.
-If you need additional packages, you have to :ref:`modify the firmware builders <modifying-firmware-builders>`.
+You `cannot compile custom packages at this step anymore`_.
+If you need additional packages, you have to `modify the firmware builders`_.
 
 Resulting image will be in ``/builder/imagebuilder/bin/ar71xx/``.
+
+.. _modify the firmware builders: Modifying Firmware Builders_
+.. _cannot compile custom packages at this step anymore: Build System Internals_
 
 Accessing Built Images
 ----------------------
@@ -98,8 +101,6 @@ Of course probably you want to use some reverse HTTP proxy in front and make the
     src/gz barrier_breaker_routing http://example.com/firmware/git.3fb97c2/openwrt/barrier_breaker/ar71xx/routing
 
 This is also how nodewatcher does it. See that builder's git revision, OpenWrt release, and platform are parts of the URL.
-
-.. _modifying-firmware-builders:
 
 Modifying Firmware Builders
 ---------------------------
