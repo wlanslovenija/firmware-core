@@ -34,14 +34,22 @@ The ``BUILDER_PUBLIC_KEY`` environmental variable is used to specify the public 
 accepted for SSH authentication. In case one uses nodewatcher_, the corresponding private key needs
 to be configured in its builder configuration.
 
+We pre-build and publish ``wlanslovenija/openwrt-builder`` images with `multiple tags for different versions and platforms`_.
+Tag is in the format `v<commit hash>_<OpenWrt release>_<platform>`. For example, ``vb106cfb_cc_ar71xx``
+corresponds to the firmware at `b106cfb commit`_ of this repository, for the OpenWrt Chaos Calmer release,
+for the ``ar71xx`` platform.
+
 .. _nodewatcher: http://nodewatcher.net
+.. _multiple tags for different versions and platforms: https://hub.docker.com/r/wlanslovenija/openwrt-builder/tags/
+.. _b106cfb commit: https://github.com/wlanslovenija/firmware-core/commit/b106cfb0a8f35d1af09a75e02fb245ffef449868
 
 Building Images
 ---------------
 
-You san SSH into the builder using the private keys which corresponds to the ``BUILDER_PUBLIC_KEY`` you provided.
+One running, you san SSH into the builder using the private keys which corresponds to the ``BUILDER_PUBLIC_KEY``
+you provided.
 
-Alternativelly, you can use Docker to connect to the running builder container locally::
+Alternatively, you can use Docker to connect to the running builder container locally::
 
     docker exec -t -i builder-openwrt-vb106cfb_cc_ar71xx bash
 
@@ -52,11 +60,14 @@ Once you are in, you can build the image you are interested in. For example::
 
     make image PROFILE="TLWR1043" PACKAGES="wireless-tools wpad-mini kmod-netem kmod-pktgen ntpclient qos-scripts iperf horst wireless-info cronscripts iwinfo nodewatcher-agent nodewatcher-agent-mod-general nodewatcher-agent-mod-resources nodewatcher-agent-mod-interfaces nodewatcher-agent-mod-wireless nodewatcher-agent-mod-keys_ssh nodewatcher-agent-mod-clients uhttpd ip-full"
 
-You can use only packages which were premade when creating this builder. You `cannot compile custom packages at this step anymore`__.
+You can use only packages which were made when creating this builder (are listed in the `openwrt/packages` file).
+You `cannot compile custom packages at this step anymore`_. If you need additional packages, you have to
+`modify the firmware builders`_.
 
 Resulting image will be in ``/builder/imagebuilder/bin/ar71xx/``.
 
-__ `Build System Internals`_
+.. _cannot compile custom packages at this step anymore:`Build System Internals`
+.. _modify the firmware builders:`Modifying Firmware Builders`
 
 Accessing Built Images
 ----------------------
