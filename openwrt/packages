@@ -56,7 +56,6 @@ python-netfilter
 python-setuptools
 python-six
 netprofscripts
-nullhttpd
 tunneldigger
 tunneldigger-broker
 kmod-video-core
