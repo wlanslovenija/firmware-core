@@ -27,7 +27,7 @@ Running Builders
 In order to run the Dockerized builder, for example ``wlanslovenija/openwrt-builder:vb106cfb_cc_ar71xx``,
 one simply needs to do the following::
 
-  $ docker run --name builder-openwrt-vb106cfb_cc_ar71xx \
+  $ docker run --detach=true --name builder-openwrt-vb106cfb_cc_ar71xx \
      --env "BUILDER_PUBLIC_KEY=ssh-rsa AAAA...2n builder@host" \
      wlanslovenija/openwrt-builder:vb106cfb_cc_ar71xx
 
