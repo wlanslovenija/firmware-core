@@ -174,6 +174,45 @@ You should commit those updated files under ``docker`` directory to the reposito
 
 Relationships of the various Dockerfiles are explained in `Build System Internals`_.
 
+Before building anything, ensure that you have the latest version of ``wlanslovenija/firmware-base`` and
+``wlanslovenija/firmware-runtime`` images locally by running::
+
+    docker pull wlanslovenija/firmware-base
+    docker pull wlanslovenija/firmware-runtime
+
+The next step is to build the correct ``wlanslovenija/openwrt-buildsystem`` image. There is a script that makes this
+easier, so you can run::
+
+    ./openwrt/scripts/docker-build-buildsystem <LONG_NAME>
+
+For example, to build for the Chaos Calmer branch, run::
+
+    ./openwrt/scripts/docker-build-buildsystem chaos_calmer
+
+After the build completes successfully, you may then build the stage 1 builder (``wlanslovenija/openwrt-builder-stage-1``)
+for your specific architecture. There is a script that makes this easier, so you can run::
+
+    ./openwrt/scripts/docker-build-stage-1 <LONG_NAME> <ARCHITECTURE>
+
+For example, to build for the ar71xx architecture of Chaos Calmer, run::
+
+    ./openwrt/scripts/docker-build-stage-1 chaos_calmer ar71xx
+
+After the build completes successfully, you may proceed with building the actual image builder, which may be used by
+nodewatcher. There is a script that makes this easier, so you can run::
+
+    ./openwrt/scripts/create-runtime -b <LONG_NAME> -a <ARCHITECTURE>
+
+For example::
+
+    ./openwrt/scripts/create-runtime -b chaos_calmer -a ar71xx
+
+Then, a Docker image named ``wlanslovenija/openwrt-builder:vXXXXXXX_cc_ar71xx`` will be available, where ``XXXXXXX``
+will be the current git revision of the local ``firmware-core`` repository.
+
+You can now run and use the new image in the same way as pre-built images. You can use them directly, or through
+nodewatcher.
+
 .. _git.openwrt.org: https://git.openwrt.org/
 .. _quilt: https://savannah.nongnu.org/projects/quilt
 
