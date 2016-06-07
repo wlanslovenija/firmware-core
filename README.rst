@@ -36,7 +36,7 @@ accepted for SSH authentication. In case one uses nodewatcher_, the correspondin
 to be configured in its builder configuration.
 
 We pre-build and publish ``wlanslovenija/openwrt-builder`` images with `multiple tags for different versions and platforms`_.
-Tag is in the format `v<commit hash>_<OpenWrt release>_<platform>`. For example, ``vb106cfb_cc_ar71xx``
+Tag is in the format ``v<commit hash>_<OpenWrt release>_<platform>``. For example, ``vb106cfb_cc_ar71xx``
 corresponds to the firmware at `b106cfb commit`_ of this repository, for the OpenWrt Chaos Calmer release,
 for the ``ar71xx`` platform.
 
