@@ -1,6 +1,5 @@
 #!/bin/bash
 
-architecture="$1"
 work_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )
 platform_dir="${work_dir}/openwrt"
 build_dir="${work_dir}/build"
@@ -14,7 +13,7 @@ fi
 # Build toolchain
 echo "Building the toolchain..."
 cd ${checkout_dir}
-make toolchain/install || {
+make toolchain/install "$@" || {
   echo "ERROR: Failed to build toolchain!"
   exit 1
 }
