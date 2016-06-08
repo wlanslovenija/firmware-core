@@ -31,6 +31,8 @@ fi
 
 mkdir -p ${build_dir}
 
+# Get code source
+firmware_source=$(git config --get remote.origin.url)
 # Get version identifier
 firmware_version=$(git describe --always)
 
@@ -83,7 +85,10 @@ fi
 # Update version file and banner
 echo "git.${firmware_version}" > package/base-files/files/etc/version
 echo "
-FIRMWARE VERSION: git.${firmware_version}
+ ------------------ OpenWrt ------------------
+  source: ${firmware_source}
+ version: git.${firmware_version}
+ ---------------------------------------------
 
 " > package/base-files/files/etc/banner
 
