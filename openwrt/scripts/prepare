@@ -83,11 +83,7 @@ fi
 # Update version file and banner
 echo "git.${firmware_version}" > package/base-files/files/etc/version
 echo "
- +-------------------------------------------------+
- | wlan slovenia                  open.wlan-si.net |
- |          node                                   |
- +-------------------------------------------------+
- *) FIRMWARE VERSION: git.${firmware_version}
+FIRMWARE VERSION: git.${firmware_version}
 
 " > package/base-files/files/etc/banner
 
