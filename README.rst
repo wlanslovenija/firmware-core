@@ -201,11 +201,11 @@ For example, to build for the ar71xx architecture of Chaos Calmer, run::
 After the build completes successfully, you may proceed with building the actual image builder, which may be used by
 nodewatcher. There is a script that makes this easier, so you can run::
 
-    ./openwrt/scripts/create-runtime -b <LONG_NAME> -a <ARCHITECTURE>
+    ./openwrt/scripts/docker-build-builders -b <LONG_NAME> -a <ARCHITECTURE>
 
 For example::
 
-    ./openwrt/scripts/create-runtime -b chaos_calmer -a ar71xx
+    ./openwrt/scripts/docker-build-builders -b chaos_calmer -a ar71xx
 
 Then, a Docker image named ``wlanslovenija/openwrt-builder:vXXXXXXX_cc_ar71xx`` will be available, where ``XXXXXXX``
 will be the current git revision of the local ``firmware-core`` repository.
@@ -289,7 +289,7 @@ overwrite anything in this directory, so it shouldn't be edited by hand.
   stage 1 builder uses the prepared buildsystem to build the OpenWrt image builders.
 
 * ``openwrt-builder`` inherits from ``firmware-runtime`` and is generated from the respective
-  ``openwrt-builder-stage-1`` by the ``create-runtime`` script. It also comes in multiple tags, one for each
+  ``openwrt-builder-stage-1`` by the ``docker-build-builders`` script. It also comes in multiple tags, one for each
   combination of firmware version, OpenWrt branch and architecture that we support. This Docker image
   contains the OpenWrt image builder that can be used to quickly generate firmware images without needing
   to compile anything.
