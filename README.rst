@@ -14,10 +14,14 @@ Pre-built images are available on the public Docker Hub:
 * `wlanslovenija/openwrt-buildsystem`_ (base image for OpenWrt builders)
 * `wlanslovenija/openwrt-builder`_ (actual builders)
 
+Most of the changes to the stock OpenWrt firmware we do are available through
+`opkg packages`_.
+
 .. _Docker: https://www.docker.com
 .. _wlanslovenija/firmware-base: https://registry.hub.docker.com/u/wlanslovenija/firmware-base/
 .. _wlanslovenija/openwrt-buildsystem: https://registry.hub.docker.com/u/wlanslovenija/openwrt-buildsystem/
 .. _wlanslovenija/openwrt-builder: https://registry.hub.docker.com/u/wlanslovenija/openwrt-builder/
+.. _opkg packages: https://github.com/wlanslovenija/firmware-packages-opkg
 
 .. note::
     When nodewatcher_ is generating firmware images, it specifies the profile, packages, and configuration
