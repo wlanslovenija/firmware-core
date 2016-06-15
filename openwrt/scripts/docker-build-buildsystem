@@ -10,6 +10,8 @@ branch=$1
   exit 1
 }
 
+cd ${work_dir}
+docker build --rm -t wlanslovenija/firmware-base .
 cd ${docker_dir}/buildsystem/${branch}
 docker build --rm -t wlanslovenija/openwrt-buildsystem:${branch} .
 cd ${work_dir}
