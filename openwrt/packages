@@ -112,3 +112,5 @@ kmod-usb-uhci
 mjpg-streamer
 wpad
 rssileds
+kmod-ipv6
+ip
