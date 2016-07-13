@@ -1,0 +1,58 @@
+Index: target/linux/ramips/dts/WITI.dts
+===================================================================
+--- target/linux/ramips/dts/WITI.dts.orig	2016-06-07 07:41:24.772886800 +0200
++++ target/linux/ramips/dts/WITI.dts	2016-07-13 10:20:03.819184615 +0200
+@@ -59,6 +59,10 @@
+ 			};
+ 		};
+ 
++		uart1@d00 {
++			status = "okay";
++		};
++
+ 		i2c@900 {
+ 			compatible = "ralink,i2c-mt7621";
+ 			reg = <0x900 0x100>;
+Index: target/linux/ramips/dts/mt7621.dtsi
+===================================================================
+--- target/linux/ramips/dts/mt7621.dtsi.orig	2016-06-07 07:41:24.772886800 +0200
++++ target/linux/ramips/dts/mt7621.dtsi	2016-07-13 10:13:12.419202047 +0200
+@@ -118,6 +118,38 @@
+ 			no-loopback-test;
+ 		};
+ 
++		uart1@d00 {
++			compatible = "ns16550a";
++			reg = <0xd00 0x100>;
++
++			clocks = <&sysclock>;
++
++			interrupt-parent = <&gic>;
++			interrupts = <GIC_SHARED 27 IRQ_TYPE_LEVEL_HIGH>;
++
++			reg-shift = <2>;
++			reg-io-width = <4>;
++			no-loopback-test;
++
++			status = "disabled";
++		};
++
++		uart2@e00 {
++			compatible = "ns16550a";
++			reg = <0xe00 0x100>;
++
++			clocks = <&sysclock>;
++
++			interrupt-parent = <&gic>;
++			interrupts = <GIC_SHARED 28 IRQ_TYPE_LEVEL_HIGH>;
++
++			reg-shift = <2>;
++			reg-io-width = <4>;
++			no-loopback-test;
++
++			status = "disabled";
++		};
++
+ 		spi@b00 {
+ 			status = "okay";
+ 
