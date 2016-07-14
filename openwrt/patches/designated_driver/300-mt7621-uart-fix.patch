@@ -1,12 +1,12 @@
 Index: target/linux/ramips/dts/WITI.dts
 ===================================================================
 --- target/linux/ramips/dts/WITI.dts.orig	2016-06-07 07:41:24.772886800 +0200
-+++ target/linux/ramips/dts/WITI.dts	2016-07-13 10:20:03.819184615 +0200
++++ target/linux/ramips/dts/WITI.dts	2016-07-14 09:53:33.359591000 +0200
 @@ -59,6 +59,10 @@
  			};
  		};
  
-+		uart1@d00 {
++		uart2@d00 {
 +			status = "okay";
 +		};
 +
@@ -16,12 +16,12 @@ Index: target/linux/ramips/dts/WITI.dts
 Index: target/linux/ramips/dts/mt7621.dtsi
 ===================================================================
 --- target/linux/ramips/dts/mt7621.dtsi.orig	2016-06-07 07:41:24.772886800 +0200
-+++ target/linux/ramips/dts/mt7621.dtsi	2016-07-13 10:13:12.419202047 +0200
-@@ -118,6 +118,38 @@
++++ target/linux/ramips/dts/mt7621.dtsi	2016-07-14 10:05:45.671559970 +0200
+@@ -118,6 +118,44 @@
  			no-loopback-test;
  		};
  
-+		uart1@d00 {
++		uart2: uart2@d00 {
 +			compatible = "ns16550a";
 +			reg = <0xd00 0x100>;
 +
@@ -30,6 +30,9 @@ Index: target/linux/ramips/dts/mt7621.dtsi
 +			interrupt-parent = <&gic>;
 +			interrupts = <GIC_SHARED 27 IRQ_TYPE_LEVEL_HIGH>;
 +
++			pinctrl-names = "default";
++			pinctrl-0 = <&uart2_pins>;
++
 +			reg-shift = <2>;
 +			reg-io-width = <4>;
 +			no-loopback-test;
@@ -37,7 +40,7 @@ Index: target/linux/ramips/dts/mt7621.dtsi
 +			status = "disabled";
 +		};
 +
-+		uart2@e00 {
++		uart3: uart3@e00 {
 +			compatible = "ns16550a";
 +			reg = <0xe00 0x100>;
 +
@@ -45,6 +48,9 @@ Index: target/linux/ramips/dts/mt7621.dtsi
 +
 +			interrupt-parent = <&gic>;
 +			interrupts = <GIC_SHARED 28 IRQ_TYPE_LEVEL_HIGH>;
++
++			pinctrl-names = "default";
++			pinctrl-0 = <&uart3_pins>;
 +
 +			reg-shift = <2>;
 +			reg-io-width = <4>;
