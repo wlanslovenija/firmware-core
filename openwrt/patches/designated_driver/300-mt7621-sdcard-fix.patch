@@ -1,26 +1,26 @@
 Index: target/linux/ramips/patches-4.4/0700-mqmaker-witi-sdcard-fix.patch
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ target/linux/ramips/patches-4.4/0700-mqmaker-witi-sdcard-fix.patch	2016-07-14 14:10:49.714936919 +0200
++++ target/linux/ramips/patches-4.4/0700-mqmaker-witi-sdcard-fix.patch	2016-07-15 09:40:05.327964232 +0200
 @@ -0,0 +1,29 @@
 +--- a/arch/mips/ralink/mt7621.c 2016-06-22 12:15:05.249331917 +0800
 ++++ b/arch/mips/ralink/mt7621.c 2016-06-22 12:10:34.910426232 +0800
 +@@ -175,6 +175,7 @@
-+  n1 = __raw_readl(sysc + SYSC_REG_CHIP_NAME1);
++ 	n1 = __raw_readl(sysc + SYSC_REG_CHIP_NAME1);
 +
-+  if (n0 == MT7621_CHIP_NAME0 && n1 == MT7621_CHIP_NAME1) {
-++   ralink_soc = MT762X_SOC_MT7621AT;
-+    name = "MT7621";
-+    soc_info->compatible = "mtk,mt7621-soc";
-+  } else {
++ 	if (n0 == MT7621_CHIP_NAME0 && n1 == MT7621_CHIP_NAME1) {
+++		ralink_soc = MT762X_SOC_MT7621AT;
++ 		name = "MT7621";
++ 		soc_info->compatible = "mtk,mt7621-soc";
++ 	} else {
 +--- a/drivers/mmc/host/mtk-mmc/sd.c 2016-06-22 12:15:05.549330705 +0800
 ++++ b/drivers/mmc/host/mtk-mmc/sd.c 2016-06-22 12:10:39.154408999 +0800
 +@@ -75,7 +75,7 @@
-+ #define RALINK_SYSCTL_BASE   0xb0000000
-+ #define RALINK_MSDC_BASE   0xb0130000
++ #define RALINK_SYSCTL_BASE		0xb0000000
++ #define RALINK_MSDC_BASE		0xb0130000
 + #endif
-+-#define IRQ_SDC      22  /*FIXME*/
-++#define IRQ_SDC      20  /*FIXME*/
++-#define IRQ_SDC 		22	/*FIXME*/
+++#define IRQ_SDC 		20	/*FIXME*/
 +
 + #include <asm/dma.h>
 + /* end of +++ */
