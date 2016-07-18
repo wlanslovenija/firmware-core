@@ -114,3 +114,7 @@ wpad
 rssileds
 kmod-ipv6
 ip
+kmod-rt2800-lib
+kmod-rt2800-usb
+kmod-rt2x00-lib
+kmod-rt2x00-usb
