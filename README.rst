@@ -4,23 +4,27 @@ Firmware Builders for nodewatcher
 This repository contains OpenWrt-based firmware builders for building
 default *nodewatcher* firmware images. We use this firmware in the
 *wlan slovenija* network and you can use it directly or use it as a base
-for your own firmware.
-To ease deployment, the builders are
-provided as a set of Docker_ images.
+for your own firmware. To ease deployment, the builders are provided as
+a set of Docker_ images.
 
 Pre-built images are available on the public Docker Hub:
 
 * `wlanslovenija/firmware-base`_ (base image for all builders)
 * `wlanslovenija/openwrt-buildsystem`_ (base image for OpenWrt builders)
-* `wlanslovenija/openwrt-builder`_ (actual builders)
+* `wlanslovenija/openwrt-builder`_ (actual OpenWrt builders)
+* `wlanslovenija/lede-buildsystem`_ (base image for LEDE builders)
+* `wlanslovenija/lede-builder`_ (actual LEDE builders)
 
-Most of the changes to the stock OpenWrt firmware we do are available through
-`opkg packages`_.
+Most of the changes to the stock OpenWrt/LEDE firmware we do are available through
+`opkg packages`_. Note that examples below are for OpenWrt, but they can be also
+adapted for LEDE, usually by replacing ``openwrt`` with ``lede``.
 
 .. _Docker: https://www.docker.com
 .. _wlanslovenija/firmware-base: https://registry.hub.docker.com/u/wlanslovenija/firmware-base/
 .. _wlanslovenija/openwrt-buildsystem: https://registry.hub.docker.com/u/wlanslovenija/openwrt-buildsystem/
 .. _wlanslovenija/openwrt-builder: https://registry.hub.docker.com/u/wlanslovenija/openwrt-builder/
+.. _wlanslovenija/lede-buildsystem: https://registry.hub.docker.com/u/wlanslovenija/lede-buildsystem/
+.. _wlanslovenija/lede-builder: https://registry.hub.docker.com/u/wlanslovenija/lede-builder/
 .. _opkg packages: https://github.com/wlanslovenija/firmware-packages-opkg
 
 .. note::

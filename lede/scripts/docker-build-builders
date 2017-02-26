@@ -1,0 +1,67 @@
+#!/bin/bash
+
+work_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )
+platform_dir="${work_dir}/lede"
+version=$(git describe --always)
+
+branch_config="$(cat ${platform_dir}/branches)"
+architectures="$(cat ${platform_dir}/architectures)"
+push=0
+
+while [ -n "$1" ]; do
+  case "$1" in
+    -b) branches="$2"; shift ;;
+    -a) architectures="$2"; shift ;;
+    -p) push=1 ;;
+    -*)
+      echo "Invalid option: $1"
+      exit 1
+      ;;
+    *)
+      break
+      ;;
+  esac
+  shift;
+done
+
+if [ -z "${branches}" ]; then
+  echo "No branch specified. Use -b <branch> to specify a branch."
+  exit 1
+fi
+
+echo "Creating runtime Docker containers..."
+echo -n "Branches: "
+echo $branches
+echo -n "Architectures: "
+echo $architectures
+
+for branch in ${branch_config}; do
+  short_branch=$(echo $branch | cut -d ':' -f 4)
+  branch=$(echo $branch | cut -d ':' -f 1)
+
+  (echo $branches | grep $branch >/dev/null) || continue;
+
+  for architecture in ${architectures}; do
+    image_name="wlanslovenija/lede-builder:v${version}_${short_branch}_${architecture}"
+
+    echo -n "  - Building image ${image_name}... "
+    docker run --rm wlanslovenija/lede-builder-stage-1:${branch}_${architecture} 2>/dev/null | \
+      docker build --rm --force-rm -t ${image_name} - >/dev/null 2>/dev/null
+
+    if [ "$?" == "0" ]; then
+      echo "ok"
+
+      if [ "${push}" == "1" ]; then
+        echo -n "  - Pushing image ${image_name}... "
+        docker push ${image_name} >/dev/null 2>/dev/null
+        if [ "$?" == "0" ]; then
+          echo "ok"
+        else
+          echo "failed!"
+        fi
+      fi
+    else
+      echo "(skipped)"
+    fi
+  done
+done
