@@ -11,7 +11,7 @@ if [ ! -f ${checkout_dir}/.toolchain_built ]; then
   exit 1
 fi
 
-# Build imagebuilder
+# Build imagebuilder.
 echo "Building the imagebuilder..."
 cd ${checkout_dir}
 make "$@" || {
@@ -19,7 +19,21 @@ make "$@" || {
     exit 1
 }
 
-echo "Extracting the imagebuilder..."
+# Recreate release directory.
+rm -rf ${release_dir}
 mkdir -p ${release_dir}
+
+echo "Extracting the imagebuilder..."
 mv ${checkout_dir}/bin/targets/*/*/lede-imagebuilder-*.tar.xz ${release_dir}/imagebuilder.tar.xz
-mv ${checkout_dir}/bin/targets/*/*/packages ${release_dir}
+
+echo "Extracting packages..."
+cd ${checkout_dir}/bin
+mkdir -p ${release_dir}/packages
+
+for package_dir in $(find -type d -name packages); do
+    target_package_dir="${release_dir}/packages/${package_dir}"
+    mkdir -p ${target_package_dir}
+    mv ${checkout_dir}/bin/${package_dir}/* ${target_package_dir}/
+done
+
+cd -
