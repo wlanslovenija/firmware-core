@@ -119,3 +119,5 @@ rpcd
 rpcd-mod-iwinfo
 uvcdynctrl
 libustream-cyassl
+gre
+kmod-gre

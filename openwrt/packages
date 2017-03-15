@@ -121,3 +121,5 @@ kmod-rt2x00-usb
 rpcd
 rpcd-mod-iwinfo
 uvcdynctrl
+gre
+kmod-gre
