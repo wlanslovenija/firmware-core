@@ -86,7 +86,6 @@ maccfg
 libcyassl
 curl
 libcurl
-uhttpd-mod-tls
 babeld
 px5g-standalone
 identity-pubkey
