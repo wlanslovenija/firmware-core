@@ -3,7 +3,7 @@
 # WARNING: This is an automatically generated Dockerfile. DO NOT EDIT. #
 ########################################################################
 
-FROM wlanslovenija/lede-buildsystem:v17.01.0
+FROM wlanslovenija/lede-buildsystem:v17.01.1
 
 RUN chown builder:builder /buildsystem/build && \
  sudo -E -u builder ./lede/scripts/configure-platform ar71xx_mikrotik && \
