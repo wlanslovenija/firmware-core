@@ -5,4 +5,6 @@ lantiq
 x86_64
 brcm2708
 ramips_rt305x
+ramips_mt7620
 ramips_mt7621
+ramips_mt7628
