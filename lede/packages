@@ -120,3 +120,5 @@ uvcdynctrl
 libustream-cyassl
 gre
 kmod-gre
+kmod-ath10k
+ath10k-firmware-qca988x
