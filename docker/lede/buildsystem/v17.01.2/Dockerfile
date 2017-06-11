@@ -5,6 +5,6 @@
 
 FROM wlanslovenija/firmware-base
 
-RUN ./lede/scripts/prepare v17.01.1 source.git 48461b5abc382b26edd0d2637f0f7b952bed90ba && \
+RUN ./lede/scripts/prepare v17.01.2 source.git 2da512ecf4631cd7812283f0931cf6bbf842a313 && \
  rm -rf .git && \
  chown -R builder:builder build
