@@ -3,7 +3,7 @@
 # WARNING: This is an automatically generated Dockerfile. DO NOT EDIT. #
 ########################################################################
 
-FROM wlanslovenija/lede-buildsystem:v17.01.3
+FROM wlanslovenija/lede-buildsystem:v17.01.4
 
 RUN chown builder:builder /buildsystem/build && \
  sudo -E -u builder ./lede/scripts/configure-platform brcm2708 && \
