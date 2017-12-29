@@ -24,7 +24,7 @@ rm -rf ${release_dir}
 mkdir -p ${release_dir}
 
 echo "Extracting the imagebuilder..."
-mv ${checkout_dir}/bin/targets/*/*/lede-imagebuilder-*.tar.xz ${release_dir}/imagebuilder.tar.xz
+mv ${checkout_dir}/bin/targets/*/*/openwrt-imagebuilder-*.tar.xz ${release_dir}/imagebuilder.tar.xz
 
 echo "Extracting packages..."
 cd ${checkout_dir}/bin
