@@ -12,7 +12,7 @@ branch=$1
 
 architectures="$2"
 if [ -z "${architectures}" ]; then
-  architectures="ar71xx lantiq x86 brcm2708 ar71xx_mikrotik ramips_rt305x x86"
+  architectures=$(cat ${platform_dir}/architectures)
 fi
 
 cd ${docker_dir}/builder-stage-1/${branch}
