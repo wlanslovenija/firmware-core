@@ -1,5 +1,0 @@
-005-no_resolv_conf_auto.patch -p0
-100-kernel_hyperv_modules.patch -p0
-006-tplink-writable-uboot.patch -p0
-300-mt7621-uart-fix.patch -p0
-300-mt7621-sdcard-fix.patch -p0
