@@ -1,0 +1,21 @@
+#!/bin/bash
+
+work_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )
+platform_dir="${work_dir}/openwrt"
+build_dir="${work_dir}/build"
+checkout_dir="${build_dir}/openwrt"
+
+if [ ! -f ${checkout_dir}/.platform_configured ]; then
+  echo "ERROR: Platform not configured!"
+  exit 1
+fi
+
+# Build toolchain
+echo "Building the toolchain..."
+cd ${checkout_dir}
+make toolchain/install "$@" || {
+  echo "ERROR: Failed to build toolchain!"
+  exit 1
+}
+
+echo > ${checkout_dir}/.toolchain_built
