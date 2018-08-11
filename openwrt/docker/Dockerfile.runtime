@@ -1,1 +1,1 @@
-FROM wlanslovenija/firmware-runtime
+FROM otvorenamreza/firmware-runtime

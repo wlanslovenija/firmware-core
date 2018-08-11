@@ -1,38 +1,32 @@
 #!/bin/bash
 
-template_buildsystem="
+openwrt_version="$1"
+openwrt_target="$2"
+openwrt_subtarget="$3"
+
+template_imagebuilder_base="
 ########################################################################
 # WARNING: This is an automatically generated Dockerfile. DO NOT EDIT. #
 ########################################################################
 
-FROM wlanslovenija/firmware-base
+FROM otvorenamreza/firmware-base
 
-RUN ./openwrt/scripts/prepare \${branch} \${path} \${rev} && \\\\
- rm -rf .git && \\\\
- chown -R builder:builder build
-"
-
-template_stage1="
-########################################################################
-# WARNING: This is an automatically generated Dockerfile. DO NOT EDIT. #
-########################################################################
-
-FROM wlanslovenija/openwrt-buildsystem:\${branch}
-
-RUN chown builder:builder /buildsystem/build && \\\\
- sudo -E -u builder ./openwrt/scripts/configure-platform \${architecture} && \\\\
- sudo -E -u builder ./openwrt/scripts/build-toolchain && \\\\
- sudo -E -u builder ./openwrt/scripts/build-imagebuilder && \\\\
- export version=\\\"\\\$(cat /buildsystem/build/openwrt/package/base-files/files/etc/version)\\\" && \\\\
- cd /buildsystem/build/release && \\\\
+RUN mkdir -p /buildsystem/build && \\\\
+ chown -R builder:builder /buildsystem/build && \\\\
+ sudo -E -u builder ./openwrt/scripts/docker-build \${openwrt_version} \${openwrt_target} \${openwrt_subtarget} && \\\\
+ cd /buildsystem/build && \\\\
  mkdir -p /builder/imagebuilder && \\\\
- tar xf imagebuilder.tar.xz -C /builder/imagebuilder --strip-components 1 && \\\\
- mv packages /builder/packages && \\\\
+ cp -r imagebuilder/. /builder/imagebuilder && \\\\
+ rm -rf imagebuilder && \\\\
+ mkdir -p /builder/packages/ && \\\\ 
  echo -n \\\"{\\\\\\\"platform\\\\\\\": \\\\\\\"openwrt\\\\\\\", \\\" > /builder/packages/metadata && \\\\
- echo -n \\\"\\\\\\\"architecture\\\\\\\": \\\\\\\"\${architecture}\\\\\\\", \\\" >> /builder/packages/metadata && \\\\
- echo -n \\\"\\\\\\\"version\\\\\\\": \\\\\\\"\\\${version}\\\\\\\", \\\" >> /builder/packages/metadata && \\\\
+ echo -n \\\"\\\\\\\"architecture\\\\\\\": \\\\\\\"\${openwrt_target}_\${openwrt_subtarget}\\\\\\\", \\\" >> /builder/packages/metadata && \\\\
+ echo -n \\\"\\\\\\\"version\\\\\\\": \\\\\\\"\${openwrt_version}\\\\\\\", \\\" >> /builder/packages/metadata && \\\\
  echo -n \\\"\\\\\\\"packages\\\\\\\": \\\" >> /builder/packages/metadata && \\\\
- find /builder/packages -name Packages | xargs cat | /buildsystem/openwrt/tools/packages2json.py >> /builder/packages/metadata && \\\\
+ cd /builder/imagebuilder && \\\\
+ make package_index && \\\\
+ make package_reload && \\\\
+ find /builder/imagebuilder/packages -name Packages | xargs cat | /buildsystem/openwrt/tools/packages2json.py >> /builder/packages/metadata && \\\\
  echo \\\"}\\\" >> /builder/packages/metadata && \\\\
  cp /buildsystem/openwrt/docker/Dockerfile.runtime /builder/Dockerfile && \\\\
  { rm -rf /buildsystem 2>/dev/null || true; }
@@ -49,20 +43,7 @@ docker_dir="${work_dir}/docker/openwrt"
 
 echo "Generating Dockerfiles..."
 rm -rf ${docker_dir}
-for branch in $(cat ${platform_dir}/branches); do
-  path=$(echo $branch | cut -d ':' -f 2)
-  rev=$(echo $branch | cut -d ':' -f 3)
-  branch=$(echo $branch | cut -d ':' -f 1)
 
-  # Buildsystem dockerfile
-  dockerfile=$(eval "echo \"${template_buildsystem}\"")
-  mkdir -p ${docker_dir}/buildsystem/${branch}
-  echo "${dockerfile}" > ${docker_dir}/buildsystem/${branch}/Dockerfile
-
-  for architecture in $(cat ${platform_dir}/architectures); do
-    # Stage 1 dockerfile
-    dockerfile=$(eval "echo \"${template_stage1}\"")
-    mkdir -p "${docker_dir}/builder-stage-1/${branch}/${architecture}"
-    echo "${dockerfile}" > "${docker_dir}/builder-stage-1/${branch}/${architecture}/Dockerfile"
-  done
-done
+dockerfile=$(eval "echo \"${template_imagebuilder_base}\"")
+mkdir -p ${docker_dir}/imagebuilder_base/${openwrt_version}/${openwrt_target}/${openwrt_subtarget}
+echo "${dockerfile}" > ${docker_dir}/imagebuilder_base/${openwrt_version}/${openwrt_target}/${openwrt_subtarget}/Dockerfile
