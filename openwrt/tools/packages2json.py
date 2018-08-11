@@ -13,7 +13,12 @@ for line in sys.stdin:
         continue
 
     if line[0] != ' ':
-        key, value = line.split(': ')
+        try:
+            key, value = line.split(': ')
+        except ValueError:
+            last_key = keys[key]
+            converter = str
+            
         keys = {
             'Package': 'name',
             'Version': 'version',
