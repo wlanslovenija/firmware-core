@@ -110,8 +110,7 @@ make V=s
 
 # Copy built packages to the imagebuilder
 cd ${build_dir}
-find SDK/bin/targets/${openwrt_target}/${openwrt_subtarget}/packages/ -type f -name 'kmod-*' -delete
-cp -r SDK/bin/targets/${openwrt_target}/${openwrt_subtarget}/packages/. imagebuilder/packages/
+find SDK/bin/packages/ -type f -name "*.ipk" | xargs -i cp {} imagebuilder/packages/
 
 # Delete the SDK
 rm -rf SDK
