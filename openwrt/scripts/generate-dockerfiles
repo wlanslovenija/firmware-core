@@ -29,6 +29,7 @@ RUN mkdir -p /buildsystem/build && \\\\
  find /builder/imagebuilder/packages -name Packages | xargs cat | /buildsystem/openwrt/tools/packages2json.py >> /builder/packages/metadata && \\\\
  echo \\\"}\\\" >> /builder/packages/metadata && \\\\
  cp /buildsystem/openwrt/docker/Dockerfile.runtime /builder/Dockerfile && \\\\
+ chown -R builder:builder /buildsystem/build && \\\\
  { rm -rf /buildsystem 2>/dev/null || true; }
 
 WORKDIR /builder
