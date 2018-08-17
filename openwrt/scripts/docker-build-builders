@@ -8,5 +8,5 @@ platform_dir="${work_dir}/openwrt"
 
 echo "Creating runtime Docker container for ${openwrt_version} ${openwrt_target} ${openwrt_subtarget}"
 
-docker run --rm otvorenamreza/openwrt-imagebuilder-base:${openwrt_version}_${openwrt_target}_${openwrt_subtarget} 2>/dev/null | \
+docker run --rm wlanslovenija/openwrt-imagebuilder-base:${openwrt_version}_${openwrt_target}_${openwrt_subtarget} 2>/dev/null | \
 docker build --rm --force-rm -t wlanslovenija/openwrt-builder:${openwrt_version}_${openwrt_target}_${openwrt_subtarget} - >/dev/null 2>/dev/null

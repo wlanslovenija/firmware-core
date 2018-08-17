@@ -70,7 +70,7 @@ cd SDK
 export LC_ALL=C
 
 # Add Wlan SI OPKG feed
-echo "src-git wlansi https://github.com/robimarko/firmware-packages-opkg.git" >> feeds.conf.default
+echo "src-git wlansi https://github.com/wlanslovenija/firmware-packages-opkg.git" >> feeds.conf.default
 
 # Disable default options
 echo "# CONFIG_ALL_NONSHARED is not set" >> .config
