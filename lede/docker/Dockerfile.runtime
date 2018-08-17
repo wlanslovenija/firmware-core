@@ -1,1 +1,0 @@
-FROM wlanslovenija/firmware-runtime

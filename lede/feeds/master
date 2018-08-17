@@ -1,2 +1,0 @@
-src-git lede https://git.lede-project.org/feed/packages.git^fe63607e8802de6347120910e1539240876c94f9
-src-git routing git://github.com/wlanslovenija/openwrt-routing-packages.git

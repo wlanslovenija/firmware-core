@@ -1,0 +1,26 @@
+#!/bin/bash -e
+
+openwrt_version="$1"
+openwrt_target="$2"
+openwrt_subtarget="$3"
+
+work_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )
+platform_dir="${work_dir}/openwrt"
+docker_dir="${work_dir}/docker/openwrt"
+
+if [[ -z "${openwrt_version}" || -z "${openwrt_target}" || -z "${openwrt_subtarget}" ]]; then
+  echo "ERROR: Usage: $0 <version> <target> <subtarget>"
+  exit 1
+fi
+
+# Generate dockerfiles
+./generate-dockerfiles ${openwrt_version} ${openwrt_target} ${openwrt_subtarget}
+
+# Prepare docker 18.04 based buildsystem
+docker build --rm -t otvorenamreza/firmware-base ${work_dir}/.
+
+# Start the building
+docker build --rm -t otvorenamreza/openwrt-imagebuilder-base:${openwrt_version}_${openwrt_target}_${openwrt_subtarget} ${docker_dir}/imagebuilder_base/${openwrt_version}/${openwrt_target}/${openwrt_subtarget}/.
+
+# Package the builder with runtime image
+./docker-build-builders ${openwrt_version} ${openwrt_target} ${openwrt_subtarget}
