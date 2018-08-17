@@ -17,10 +17,10 @@ fi
 ./generate-dockerfiles ${openwrt_version} ${openwrt_target} ${openwrt_subtarget}
 
 # Prepare docker 18.04 based buildsystem
-docker build --rm -t otvorenamreza/firmware-base ${work_dir}/.
+docker build --rm -t wlanslovenija/firmware-base ${work_dir}/.
 
 # Start the building
-docker build --rm -t otvorenamreza/openwrt-imagebuilder-base:${openwrt_version}_${openwrt_target}_${openwrt_subtarget} ${docker_dir}/imagebuilder_base/${openwrt_version}/${openwrt_target}/${openwrt_subtarget}/.
+docker build --rm -t wlanslovenija/openwrt-imagebuilder-base:${openwrt_version}_${openwrt_target}_${openwrt_subtarget} ${docker_dir}/imagebuilder_base/${openwrt_version}/${openwrt_target}/${openwrt_subtarget}/.
 
 # Package the builder with runtime image
 ./docker-build-builders ${openwrt_version} ${openwrt_target} ${openwrt_subtarget}
