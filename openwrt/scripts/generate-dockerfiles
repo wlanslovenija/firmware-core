@@ -9,7 +9,7 @@ template_imagebuilder_base="
 # WARNING: This is an automatically generated Dockerfile. DO NOT EDIT. #
 ########################################################################
 
-FROM otvorenamreza/firmware-base
+FROM wlanslovenija/firmware-base
 
 RUN mkdir -p /buildsystem/build && \\\\
  chown -R builder:builder /buildsystem/build && \\\\
